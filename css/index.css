@@ -1,0 +1,124 @@
+/* font */
+@font-face {
+    font-family: Mulish;
+    src: url('../font/Mulish-Regular.ttf');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+/* Genel Stil */
+body {
+    font-family: Mulish;
+    background-color: #F7F7F7;
+    font-size: 16px; /* 1rem = 16px */
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Header */
+  header {
+    background-color: #fff;
+  height: 7rem;
+  padding: 1em 3em;
+  margin-bottom: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  }
+  
+  .logo {
+    width: 11rem; 
+    height: auto;
+  }
+  
+  .logout-button {
+    background-color: #FFB01D;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .logout-button:hover {
+    background-color: #f57c00;
+  }
+  
+  /* Menü Konteyneri */
+  .menu-container {
+    margin: 20px auto;
+    width: 80%;
+    max-width: 800px;
+  }
+  
+  /* Kategori */
+  .category {
+    background-color: white;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    cursor: pointer;
+    border-left: 5px solid #FFB01D;
+  }
+  
+  .category:hover {
+    background-color: #f8f9fa;
+  }
+  
+  .category-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  /* Ürün Listesi */
+  .item-list {
+    display: none;
+    margin-top: 10px;
+    padding-left: 15px;
+  }
+  
+  .item {
+    border-bottom: 1px solid #ccc;
+    padding: 10px 0;
+    color: #555;
+  }
+  
+  .item:last-child {
+    border-bottom: none;
+  }
+ /* Kategori ve ürün düzenleme, silme butonları */
+.category-buttons {
+    display: flex;
+    justify-content: flex-end; /* Butonları sağa yaslamak için */
+    margin-top: 10px;
+  }
+  
+  .category-button {
+    background-color: #FFB01D;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 10px; /* Butonlar arasında mesafe */
+  }
+  
+  .category-button:hover {
+    background-color: #f57c00;
+  }
+  
+  /* Kategori içeriği gizli, tıklanınca gösterilecek */
+  .item-list {
+    display: none;
+    margin-top: 10px;
+    padding-left: 20px;
+  }
+  
+  .item-list.active {
+    display: block;
+  }

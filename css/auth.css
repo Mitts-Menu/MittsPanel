@@ -1,0 +1,71 @@
+/*  font */
+@font-face {
+    font-family: Mulish;
+    src: url('../font/Mulish-Regular.ttf');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+/* Genel Stil */
+body {
+    font-family: Mulish;
+    background-color: #F7F7F7;
+    font-size: 16px; /* 1rem = 16px */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  
+  /* Giriş Kutusu */
+  .login-container {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 350px;
+    text-align: center;
+  }
+  
+  /* Logo */
+  .logo {
+    width: 100px;
+    margin-bottom: 20px;
+  }
+  
+  /* Başlık */
+  h2 {
+    margin-bottom: 20px;
+    color: #666687;
+  }
+  
+  /* Giriş Alanları */
+  .input-group {
+    margin-bottom: 15px;
+  }
+  
+  .input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+  
+  /* Buton */
+  button {
+    background-color: #FFB01D;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px;
+    width: 100%;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  button:hover {
+    background-color:#f57c00;
+  }
+  

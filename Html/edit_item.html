@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ürün Düzenleme</title>
+  <link rel="stylesheet" href="../css/edit_item.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <a href="../Html/main.html">
+        <img src="../img/mitts_logo.png" alt="Logo" class="logo">
+      </a>    
+          <button class="logout-button" onclick="logout()">Çıkış Yap</button>
+  </header>
+
+  <!-- Ürün Düzenleme Formu -->
+  <div class="edit-container">
+    <h2>Ürün Düzenleme</h2>
+    <form id="editItemForm">
+        <label for="itemName">Ürün Adı:</label>
+        <input type="text" id="itemName" required><br><br>
+
+        <label for="itemPrice">Fiyat:</label>
+        <input type="number" id="itemPrice" required><br><br>
+
+        <label for="itemDetails">Açıklama:</label>
+        <input type="text" id="itemDescription" required><br><br>
+
+        <label for="itemImage">Resim:</label>
+        <img id="itemImage" src="" alt="Ürün Resmi" style="max-width: 200px; height: auto;"><br><br>
+        <label for="itemImageUpload">Yeni Resim Yükle:</label>
+        <input type="file" id="itemImageUpload" accept="image/*"><br><br>
+        <label for="itemIsActive">Aktif:</label>
+        <input type="checkbox" id="itemIsActive"><br><br>
+
+        <button type="submit">Ürünü Güncelle</button>
+    </form>
+
+      
+  </div>
+
+  <!-- Firebase ve edit_item.js bağlantısı -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="../Js/edit_item.js"></script>
+</body>
+</html>

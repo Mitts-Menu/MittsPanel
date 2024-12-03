@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giriş Yap</title>
+  <link rel="stylesheet" href="css/auth.css"> <!-- CSS dosyası bağlantısı -->
+</head>
+<body>
+  <div class="login-container">
+    <img src="img/mitts_logo.png" alt="Logo" class="logo"> <!-- Logonuzu buraya ekleyin -->
+    <h2>Yönetici Girişi</h2>
+    <form onsubmit="login(); return false;">
+      <div class="input-group">
+        <input type="email" id="email" placeholder="E-posta" required>
+      </div>
+      <div class="input-group">
+        <input type="password" id="password" placeholder="Şifre" required>
+      </div>
+      <button type="submit">Giriş Yap</button>
+    </form>
+  </div>
+
+  <!-- Firebase ve auth.js bağlantısı -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="Js/index.js"></script>
+</body>
+</html>
