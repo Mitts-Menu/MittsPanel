@@ -105,7 +105,19 @@ document.getElementById("editItemForm").addEventListener("submit", function (eve
     event.preventDefault();
 
     const updatedName = document.getElementById("itemName").value;
-    const updatedPrice = document.getElementById("itemPrice").value;
+    // Burada parseInt() veya parseFloat() kullanarak sayısal tipe çeviriyoruz
+    let updatedPrice = document.getElementById("itemPrice").value;
+    updatedPrice = parseInt(updatedPrice);  // int olarak almak için
+
+    // Eğer ondalıklı fiyat girilmesini istiyorsanız:
+    // updatedPrice = parseFloat(updatedPrice);
+
+    // Fiyat bilgisini boş veya geçersiz girilmişse kontrol edebilirsiniz
+    if (isNaN(updatedPrice)) {
+        alert("Lütfen geçerli bir fiyat giriniz.");
+        return;
+    }
+
     const updatedDetails = document.getElementById("itemDescription").value;
     const updatedIsActive = document.getElementById("itemIsActive").checked;
 
@@ -115,18 +127,17 @@ document.getElementById("editItemForm").addEventListener("submit", function (eve
     let updatedImageUrl = document.getElementById("itemImage").src;  // Varsayılan resim URL'si
 
     if (newImageFile) {
-        // Yeni resim varsa, önce Firebase Storage'a yükle
         uploadImage(newImageFile).then((imageUrl) => {
-            updatedImageUrl = imageUrl; // Yeni resmin URL'sini al
+            updatedImageUrl = imageUrl;
             updateItemInDatabase(updatedName, updatedPrice, updatedDetails, updatedImageUrl, updatedIsActive);
         }).catch((error) => {
             alert("Resim yüklenirken bir hata oluştu: " + error.message);
         });
     } else {
-        // Yeni resim yoksa, mevcut resim URL'sini kullan
         updateItemInDatabase(updatedName, updatedPrice, updatedDetails, updatedImageUrl, updatedIsActive);
     }
 });
+
 
 // Veriyi Firebase'e güncelleme
 function updateItemInDatabase(updatedName, updatedPrice, updatedDetails, updatedImageUrl, updatedIsActive) {

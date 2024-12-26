@@ -11,10 +11,8 @@ const firebaseConfig = {
     measurementId: "G-FY4717JPP5"
   };
 
-// Firebase'i başlat
 firebase.initializeApp(firebaseConfig);
 
-// Firebase bağlantısı
 const db = firebase.database();
 
 firebase.auth().onAuthStateChanged(user => {

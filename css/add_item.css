@@ -1,0 +1,84 @@
+/* Genel Stil */
+body {
+  font-family: Mulish;
+  background-color: #F7F7F7;
+  font-size: 16px;
+  margin: 0;
+  padding: 0;
+}
+
+/* Header */
+header {
+  background-color: #fff;
+  height: 7rem;
+  padding: 1em 3em;
+  margin-bottom: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+.logo {
+  width: 11rem;
+  height: auto;
+}
+
+.logout-button {
+  background-color: #FFB01D;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.logout-button:hover {
+  background-color: #f57c00;
+}
+
+/* Edit Form Container */
+.edit-container {
+  margin: 20px auto;
+  width: 80%;
+  max-width: 800px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  text-align: center;
+  color: #333;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin: 10px 0 5px;
+}
+
+input, textarea {
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  background-color: #FFB01D;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #f57c00;
+}

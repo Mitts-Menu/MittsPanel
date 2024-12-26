@@ -15,10 +15,16 @@
     <button class="logout-button" onclick="logout()">Çıkış Yap</button>
   </header>
 
+  <!-- Butonu ortalamak için bir kapsayıcı div -->
+  <div class="add-category-container">
+    <button class="category-button" onclick="addCategory()">Kategori Ekle</button>
+  </div>
+
   <!-- Menü Konteyneri -->
   <div class="menu-container" id="menuContainer">
     <!-- Kategoriler ve ürünler buraya yüklenecek -->
   </div>
+
   <!-- Firebase ve panel.js bağlantısı -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -26,4 +32,3 @@
   <script src="../Js/main.js"></script>
 </body>
 </html>
-

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Yeni Ürün Ekle</title>
+  <!-- CSS Dosyası -->
+  <link rel="stylesheet" href="../css/add_item.css">
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <a href="../Html/main.html">
+        <img src="../img/mitts_logo.png" alt="Logo" class="logo">
+      </a>    
+          <button class="logout-button" onclick="logout()">Çıkış Yap</button>
+  </header>
+
+  
+  <div class="edit-container">
+    <h2>Yeni Ürün Ekle</h2>
+  <!-- Ürün Ekleme Formu -->
+  <form id="addItemForm">
+    <label for="itemName">Ürün Adı:</label><br>
+    <input type="text" id="itemName" required><br><br>
+
+    <label for="itemPrice">Fiyat:</label><br>
+    <input type="number" step="0.01" id="itemPrice" required><br><br>
+
+    <label for="itemDescription">Açıklama:</label><br>
+    <textarea id="itemDescription" rows="4"></textarea><br><br>
+
+    <label for="itemIsPopular">Popüler mi?</label>
+    <input type="checkbox" id="itemIsPopular"><br><br>
+
+    <!-- Resim yükleme alanı -->
+    <label for="itemImage">Resim Yükle:</label><br>
+    <input type="file" id="itemImage" accept="image/*"><br><br>
+
+    <button type="submit">Ürünü Kaydet</button>
+  </form>
+</div>
+  <!-- Firebase JS SDK'ları -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+  <!-- add_item JS Dosyası -->
+  <script src="../Js/add_item.js"></script>
+
+</body>
+</html>
