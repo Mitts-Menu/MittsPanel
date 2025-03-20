@@ -85,19 +85,28 @@ function loadMenuData() {
         category.items.forEach(item => {
           const itemDiv = document.createElement("div");
           itemDiv.className = "item";
+          
+          // Görseli olmayan ürünler için placeholder göster
+          if (!item.image_url || item.image_url === "" || item.image_url === "undefined") {
+            item.image_url = "../img/mitts_logo.png";
+          }
+          
           itemDiv.textContent = `${item.name} - ${item.price} TL`;
 
-          // Ürün düzenleme
+          // Düzenleme işlemi için kategori_id'yi de iletiyoruz
           const editItemButton = document.createElement("button");
           editItemButton.className = "category-button";
           editItemButton.textContent = "Düzenle";
-          editItemButton.onclick = () => editItem(category.category_name, item);
+          editItemButton.onclick = () => editItem(category.category_name, {
+            ...item,
+            category_id: category.category_id
+          });
 
-          // Ürün silme
+          // Silme işlemi için kategori_id'yi de iletiyoruz
           const deleteItemButton = document.createElement("button");
           deleteItemButton.className = "category-button";
           deleteItemButton.textContent = "Sil";
-          deleteItemButton.onclick = () => deleteItem(category.category_name, item.name);
+          deleteItemButton.onclick = () => deleteItem(category.category_name, item.name, category.category_id);
 
           itemDiv.appendChild(editItemButton);
           itemDiv.appendChild(deleteItemButton);
@@ -109,24 +118,24 @@ function loadMenuData() {
         itemList.appendChild(noItems);
       }
 
-      // Kategori butonları
+      // Kategori butonları - kategori ID'sini de iletiyoruz
       const editCategoryButton = document.createElement("button");
       editCategoryButton.className = "category-button";
       editCategoryButton.textContent = "Düzenle";
-      editCategoryButton.onclick = () => editCategory(category.category_name);
+      editCategoryButton.onclick = () => editCategory(category.category_name, category.category_id);
 
       const deleteCategoryButton = document.createElement("button");
       deleteCategoryButton.className = "category-button";
       deleteCategoryButton.textContent = "Sil";
-      deleteCategoryButton.onclick = () => deleteCategory(category.category_name);
+      deleteCategoryButton.onclick = () => deleteCategory(category.category_name, category.category_id);
 
       // ÜRÜN EKLE butonu -> add_item.html'e yönlendir
       const addItemButton = document.createElement("button");
       addItemButton.className = "category-button";
       addItemButton.textContent = "Ürün Ekle";
       addItemButton.onclick = () => {
-        // Parametre olarak category_name'i gönderiyoruz
-        window.location.href = `add_item.html?category=${encodeURIComponent(category.category_name)}`;
+        // Kategori adı ve kategori ID'sini parametre olarak gönderiyoruz
+        window.location.href = `add_item.html?category=${encodeURIComponent(category.category_name)}&id=${encodeURIComponent(category.category_id)}`;
       };
 
       // Buton grubu
@@ -146,42 +155,53 @@ function loadMenuData() {
 // ----------------------------------------------------
 // Kategori düzenleme
 // ----------------------------------------------------
-function editCategory(categoryName) {
-  window.location.href = `edit_category.html?category=${encodeURIComponent(categoryName)}`;
+function editCategory(categoryName, categoryId) {
+  window.location.href = `edit_category.html?category=${encodeURIComponent(categoryName)}&id=${encodeURIComponent(categoryId)}`;
 }
 
 // ----------------------------------------------------
 // Kategori silme
 // ----------------------------------------------------
-function deleteCategory(categoryName) {
+function deleteCategory(categoryName, categoryId) {
   if (confirm(`"${categoryName}" kategorisini silmek istediğinize emin misiniz?`)) {
 
-    // 1) Hem tr hem en tarafında silme promiselerini hazırlayalım
-    const trPromise = db.ref("menu/tr")
-      .orderByChild("category_name")
-      .equalTo(categoryName)
-      .once("value");
+    // Hem TR hem EN tüm verilerini al
+    const trPromise = db.ref("menu/tr").once("value");
+    const enPromise = db.ref("menu/en").once("value");
 
-    const enPromise = db.ref("menu/en")
-      .orderByChild("category_name")
-      .equalTo(categoryName)
-      .once("value");
-
-    // 2) Promise.all ile her ikisini de bekle
+    // Promise.all ile her ikisini de bekle
     Promise.all([trPromise, enPromise])
       .then(([trSnapshot, enSnapshot]) => {
-        // TR tarafında bulduğumuz kategorileri silelim
+        const deletePromises = [];
+        
+        // TR menüsünde kategori ID'sine göre eşleşen kategoriyi bul ve sil
+        let trArray = [];
         trSnapshot.forEach(childSnapshot => {
-          childSnapshot.ref.remove();
+          const category = childSnapshot.val();
+          // Kategori ID'si eşleşmiyorsa diziye ekle (eşleşenleri filtrele)
+          if (category.category_id !== categoryId) {
+            trArray.push(category);
+          }
         });
-
-        // EN tarafında bulduğumuz kategorileri silelim
+        
+        // EN menüsünde kategori ID'sine göre eşleşen kategoriyi bul ve sil
+        let enArray = [];
         enSnapshot.forEach(childSnapshot => {
-          childSnapshot.ref.remove();
+          const category = childSnapshot.val();
+          // Kategori ID'si eşleşmiyorsa diziye ekle (eşleşenleri filtrele)
+          if (category.category_id !== categoryId) {
+            enArray.push(category);
+          }
         });
+        
+        // Güncellenmiş dizileri yazalım
+        deletePromises.push(db.ref("menu/tr").set(trArray));
+        deletePromises.push(db.ref("menu/en").set(enArray));
+        
+        return Promise.all(deletePromises);
       })
       .then(() => {
-        // 3) Silme işlemi tamamlanınca menüyü yeniden yükleyelim
+        // Silme işlemi tamamlanınca menüyü yeniden yükleyelim
         loadMenuData();
       })
       .catch(err => {
@@ -194,55 +214,72 @@ function deleteCategory(categoryName) {
 // Ürün düzenleme
 // ----------------------------------------------------
 function editItem(categoryName, item) {
-  window.location.href = `edit_item.html?category=${encodeURIComponent(categoryName)}&item=${encodeURIComponent(item.name)}`;
+  window.location.href = `edit_item.html?category=${encodeURIComponent(categoryName)}&id=${encodeURIComponent(item.category_id)}&item=${encodeURIComponent(item.name)}`;
 }
 
 // ----------------------------------------------------
 // Ürün silme
 // ----------------------------------------------------
-function deleteItem(categoryName, itemName) {
+function deleteItem(categoryName, itemName, categoryId) {
   if (confirm(`"${itemName}" ürününü silmek istediğinize emin misiniz?`)) {
 
-    // Hem "menu/tr" hem "menu/en" altındaki veriyi paralel okuyalım.
-    const trPromise = db.ref("menu/tr")
-      .orderByChild("category_name")
-      .equalTo(categoryName)
-      .once("value");
-
-    const enPromise = db.ref("menu/en")
-      .orderByChild("category_name")
-      .equalTo(categoryName)
-      .once("value");
+    // Hem "menu/tr" hem "menu/en" tüm verilerini al
+    const trPromise = db.ref("menu/tr").once("value");
+    const enPromise = db.ref("menu/en").once("value");
 
     // Promise.all ile aynı anda bekleyelim
     Promise.all([trPromise, enPromise])
       .then(([trSnapshot, enSnapshot]) => {
-        // "menu/tr" tarafında itemName eşleşen ürünü sil
-        trSnapshot.forEach(childSnapshot => {
-          const itemsRef = childSnapshot.ref.child("items");
-          itemsRef.once("value", itemSnapshot => {
-            itemSnapshot.forEach(item => {
-              if (item.val().name === itemName) {
-                item.ref.remove();
-              }
-            });
-          });
+        const deletePromises = [];
+        let itemNumericId = null;
+
+        // TR menüsünde kategori ID'sine göre eşleşen kategoriyi bul
+        trSnapshot.forEach(categorySnapshot => {
+          if (categorySnapshot.val().category_id === categoryId) {
+            const itemsArray = categorySnapshot.val().items || [];
+            
+            // Önce silinecek ürünün numeric ID'sini bul
+            const itemToDelete = itemsArray.find(item => item.name === itemName);
+            if (itemToDelete) {
+              itemNumericId = itemToDelete.id;
+            }
+            
+            // Silinecek ürün dışındakileri filtrele
+            const updatedItems = itemsArray.filter(item => item.name !== itemName);
+            
+            // Referans üzerinden güncelle
+            if (updatedItems.length !== itemsArray.length) {
+              deletePromises.push(
+                categorySnapshot.ref.child("items").set(updatedItems)
+              );
+            }
+          }
         });
 
-        // "menu/en" tarafında itemName eşleşen ürünü sil
-        enSnapshot.forEach(childSnapshot => {
-          const itemsRef = childSnapshot.ref.child("items");
-          itemsRef.once("value", itemSnapshot => {
-            itemSnapshot.forEach(item => {
-              if (item.val().name === itemName) {
-                item.ref.remove();
+        // EN menüsünde ID'ye göre eşleşen ürünü sil
+        if (itemNumericId !== null) { // Eğer ID bulunduysa
+          enSnapshot.forEach(categorySnapshot => {
+            if (categorySnapshot.val().category_id === categoryId) {
+              const itemsArray = categorySnapshot.val().items || [];
+              
+              // ID'ye göre filtrele
+              const updatedItems = itemsArray.filter(item => item.id !== itemNumericId);
+              
+              // Referans üzerinden güncelle
+              if (updatedItems.length !== itemsArray.length) {
+                deletePromises.push(
+                  categorySnapshot.ref.child("items").set(updatedItems)
+                );
               }
-            });
+            }
           });
-        });
+        }
+
+        return Promise.all(deletePromises);
       })
       .then(() => {
         // Silme işlemleri tamamlanınca listeyi yeniden yükle
+        alert(`"${itemName}" ürünü başarıyla silindi.`);
         loadMenuData();
       })
       .catch(err => {
@@ -250,7 +287,6 @@ function deleteItem(categoryName, itemName) {
       });
   }
 }
-
 
 // ----------------------------------------------------
 // Açılır/kapanır ürün listesi

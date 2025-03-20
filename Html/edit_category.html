@@ -5,6 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kategori Düzenle</title>
     <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .language-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .language-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ccc;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -17,8 +32,19 @@
     <div class="form-container">
         <h2>Kategori Düzenle</h2>
         <form id="editCategoryForm">
-            <label for="categoryName">Kategori Adı:</label>
-            <input type="text" id="categoryName" name="categoryName" required>
+            <!-- TR Bölümü -->
+            <div class="language-section">
+                <div class="language-header">Türkçe Bilgiler</div>
+                <label for="categoryNameTR">Kategori Adı (TR):</label>
+                <input type="text" id="categoryNameTR" name="categoryNameTR" required>
+            </div>
+            
+            <!-- EN Bölümü -->
+            <div class="language-section">
+                <div class="language-header">İngilizce Bilgiler</div>
+                <label for="categoryNameEN">Kategori Adı (EN):</label>
+                <input type="text" id="categoryNameEN" name="categoryNameEN">
+            </div>
             
             <button type="submit" class="save-button">Kaydet</button>
         </form>

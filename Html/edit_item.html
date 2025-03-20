@@ -5,6 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ürün Düzenleme</title>
   <link rel="stylesheet" href="../css/edit_item.css">
+  <style>
+    .language-section {
+      margin-bottom: 20px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+    .language-header {
+      font-weight: bold;
+      margin-bottom: 10px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #ccc;
+    }
+  </style>
 </head>
 <body>
 
@@ -20,14 +35,29 @@
   <div class="edit-container">
     <h2>Ürün Düzenleme</h2>
     <form id="editItemForm">
-        <label for="itemName">Ürün Adı:</label>
-        <input type="text" id="itemName" required><br><br>
+        <!-- TR Bölümü -->
+        <div class="language-section">
+          <div class="language-header">Türkçe Bilgiler</div>
+          <label for="itemNameTR">Ürün Adı (TR):</label>
+          <input type="text" id="itemNameTR" required><br><br>
 
+          <label for="itemDescriptionTR">Açıklama (TR):</label>
+          <textarea id="itemDescriptionTR" rows="4" cols="50" style="resize: both;"></textarea><br><br>
+        </div>
+
+        <!-- EN Bölümü -->
+        <div class="language-section">
+          <div class="language-header">İngilizce Bilgiler</div>
+          <label for="itemNameEN">Ürün Adı (EN):</label>
+          <input type="text" id="itemNameEN"><br><br>
+
+          <label for="itemDescriptionEN">Açıklama (EN):</label>
+          <textarea id="itemDescriptionEN" rows="4" cols="50" style="resize: both;"></textarea><br><br>
+        </div>
+
+        <!-- Ortak Bilgiler -->
         <label for="itemPrice">Fiyat:</label>
         <input type="number" id="itemPrice" required><br><br>
-
-        <label for="itemDetails">Açıklama:</label>
-        <input type="text" id="itemDescription" required><br><br>
 
         <label for="itemImage">Resim:</label>
         <img id="itemImage" src="" alt="Ürün Resmi" style="max-width: 200px; height: auto;"><br><br>
