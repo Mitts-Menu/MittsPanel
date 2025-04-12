@@ -141,6 +141,11 @@ const firebaseConfig = {
       console.log("Kategori ID:", categoryId);
       console.log("Aktif:", isActive, "Popüler:", isPopular);
       
+      // Tanımsız veya boş değerleri kontrol et
+      if (!nameTR || !nameEN || !imageUrl || isNaN(price)) {
+        return reject("Eksik veya geçersiz veri. Lütfen tüm alanları kontrol edin.");
+      }
+      
       if (!categoryId) {
         console.error("Kategori ID'si bulunamadı!");
         return reject("Kategori ID'si bulunamadı. Lütfen sayfayı yenileyip tekrar deneyin.");
@@ -169,7 +174,9 @@ const firebaseConfig = {
           if (child.val().category_id === parseInt(categoryId)) {
             trCategory = child.val();
             trCategoryKey = child.key;
-            trCategoryItems = Array.isArray(child.val().items) ? [...child.val().items] : [];
+            // Dizi boş veya tanımsız ise boş dizi oluştur, değilse temizle
+            trCategoryItems = Array.isArray(child.val().items) ? 
+              child.val().items.filter(item => item !== null && item !== undefined) : [];
             console.log("TR Kategori bulundu:", trCategory.category_name, "ID:", trCategory.category_id, "Key:", trCategoryKey);
           }
         });
@@ -184,7 +191,9 @@ const firebaseConfig = {
           if (child.val().category_id === parseInt(categoryId)) {
             enCategory = child.val();
             enCategoryKey = child.key;
-            enCategoryItems = Array.isArray(child.val().items) ? [...child.val().items] : [];
+            // Dizi boş veya tanımsız ise boş dizi oluştur, değilse temizle
+            enCategoryItems = Array.isArray(child.val().items) ? 
+              child.val().items.filter(item => item !== null && item !== undefined) : [];
             console.log("EN Kategori bulundu:", enCategory.category_name, "ID:", enCategory.category_id, "Key:", enCategoryKey);
           }
         });
@@ -235,7 +244,7 @@ const firebaseConfig = {
         return { trCategory, trCategoryKey, trCategoryItems, enCategory, enCategoryKey, enCategoryItems };
       })
       .then(data => {
-        const { trCategory, trCategoryKey, trCategoryItems, enCategory, enCategoryKey, enCategoryItems } = data;
+        let { trCategory, trCategoryKey, trCategoryItems, enCategory, enCategoryKey, enCategoryItems } = data;
         
         console.log("İşleme devam, TR kategori:", trCategory.category_name, "EN kategori:", enCategory.category_name);
         
@@ -289,12 +298,18 @@ const firebaseConfig = {
         const updatePromises = [];
         
         // TR kategorisine ürünü ekle
+        trCategoryItems = trCategoryItems.filter(item => item !== null && item !== undefined);
+        // Dizi indekslerini düzelt (sparse array sorununu önle)
+        trCategoryItems = trCategoryItems.map(item => item);
         trCategoryItems.push(newItemTR);
         updatePromises.push(
           trRef.child(trCategoryKey).child("items").set(trCategoryItems)
         );
         
         // EN kategorisine ürünü ekle
+        enCategoryItems = enCategoryItems.filter(item => item !== null && item !== undefined);
+        // Dizi indekslerini düzelt (sparse array sorununu önle)
+        enCategoryItems = enCategoryItems.map(item => item);
         enCategoryItems.push(newItemEN);
         updatePromises.push(
           enRef.child(enCategoryKey).child("items").set(enCategoryItems)
