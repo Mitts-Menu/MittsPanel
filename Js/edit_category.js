@@ -136,16 +136,25 @@ function loadCategoryData(categoryId) {
 document.getElementById("editCategoryForm").addEventListener("submit", function (event) {
   event.preventDefault();
 
+  // Butonun birden fazla kez tıklanmasını engelle
+  const submitButton = this.querySelector('button[type="submit"]');
+  submitButton.disabled = true;
+  submitButton.textContent = "Kaydediliyor...";
+
   const newCategoryNameTR = document.getElementById("categoryNameTR").value.trim();
   const newCategoryNameEN = document.getElementById("categoryNameEN").value.trim();
 
   if (!newCategoryNameTR) {
     alert("Türkçe kategori adı boş olamaz.");
+    submitButton.disabled = false;
+    submitButton.textContent = "Kaydet";
     return;
   }
 
   if (!categoryId) {
     alert("Kategori ID'si bulunamadı.");
+    submitButton.disabled = false;
+    submitButton.textContent = "Kaydet";
     return;
   }
   
@@ -190,5 +199,7 @@ document.getElementById("editCategoryForm").addEventListener("submit", function 
     })
     .catch(error => {
       alert("Kategori güncellenirken hata oluştu: " + error.message);
+      submitButton.disabled = false;
+      submitButton.textContent = "Kaydet";
     });
 });

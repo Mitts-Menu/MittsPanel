@@ -46,6 +46,11 @@ const firebaseConfig = {
   document.getElementById("addItemForm").addEventListener("submit", function(e) {
     e.preventDefault();
   
+    // Form butonunu devre dışı bırak
+    const submitButton = this.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+    submitButton.textContent = "Ekleniyor...";
+  
     // Form alanlarını al
     const itemNameTR = document.getElementById("itemNameTR").value.trim();
     const itemNameEN = document.getElementById("itemNameEN").value.trim();
@@ -57,10 +62,14 @@ const firebaseConfig = {
   
     if (!itemNameTR) {
       alert("Türkçe ürün adı boş olamaz.");
+      submitButton.disabled = false;
+      submitButton.textContent = "Ürünü Kaydet";
       return;
     }
     if (isNaN(itemPrice)) {
       alert("Geçerli bir fiyat giriniz.");
+      submitButton.disabled = false;
+      submitButton.textContent = "Ürünü Kaydet";
       return;
     }
   
@@ -83,10 +92,14 @@ const firebaseConfig = {
             })
             .catch(err => {
               alert("Ürün eklenirken hata: " + err);
+              submitButton.disabled = false;
+              submitButton.textContent = "Ürünü Kaydet";
             });
         })
         .catch(err => {
           alert("Resim yüklenemedi: " + err);
+          submitButton.disabled = false;
+          submitButton.textContent = "Ürünü Kaydet";
         });
     } else {
       // Resim seçilmemişse, placeholder olarak mitts_logo kullan
@@ -98,6 +111,8 @@ const firebaseConfig = {
         })
         .catch(err => {
           alert("Ürün eklenirken hata: " + err);
+          submitButton.disabled = false;
+          submitButton.textContent = "Ürünü Kaydet";
         });
     }
   });

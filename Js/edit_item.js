@@ -149,6 +149,11 @@ function uploadImage(file) {
 document.getElementById("editItemForm").addEventListener("submit", function (event) {
     event.preventDefault();
 
+    // Butonun birden fazla kez tıklanmasını engelle
+    const submitButton = this.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+    submitButton.textContent = "Güncelleniyor...";
+
     const updatedNameTR = document.getElementById("itemNameTR").value.trim();
     const updatedNameEN = document.getElementById("itemNameEN").value.trim();
     const updatedDetailsTR = document.getElementById("itemDescriptionTR").value.trim();
@@ -157,6 +162,8 @@ document.getElementById("editItemForm").addEventListener("submit", function (eve
     // İsim alanları için kontrol
     if (!updatedNameTR) {
         alert("Türkçe ürün adı boş olamaz.");
+        submitButton.disabled = false;
+        submitButton.textContent = "Ürünü Güncelle";
         return;
     }
     
@@ -174,6 +181,8 @@ document.getElementById("editItemForm").addEventListener("submit", function (eve
     // Fiyat bilgisini boş veya geçersiz girilmişse kontrol edebilirsiniz
     if (isNaN(updatedPrice)) {
         alert("Lütfen geçerli bir fiyat giriniz.");
+        submitButton.disabled = false;
+        submitButton.textContent = "Ürünü Güncelle";
         return;
     }
 
@@ -213,6 +222,8 @@ document.getElementById("editItemForm").addEventListener("submit", function (eve
                             updateItemInDatabase(updatedNameTR, finalNameEN, updatedPrice, updatedDetailsTR, finalDetailsEN, newImageUrl, updatedIsActive);
                         }).catch((error) => {
                             alert("Resim yüklenirken bir hata oluştu: " + error.message);
+                            submitButton.disabled = false;
+                            submitButton.textContent = "Ürünü Güncelle";
                         });
                     } else {
                         // Yeni resim yüklenmediyse
@@ -344,5 +355,11 @@ function updateItemInDatabase(updatedNameTR, updatedNameEN, updatedPrice, update
         })
         .catch(error => {
             alert("Veri güncellenirken bir hata oluştu: " + error.message);
+            // Eğer form hala görünüyorsa butonu tekrar etkinleştir
+            const submitButton = document.querySelector('#editItemForm button[type="submit"]');
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.textContent = "Ürünü Güncelle";
+            }
         });
 }
