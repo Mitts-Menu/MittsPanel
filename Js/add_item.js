@@ -2,15 +2,15 @@
 // Firebase Config (aynen tekrar)
 // ----------------------------------------------------
 const firebaseConfig = {
-    apiKey: "AIzaSyCCI4I7yCCHEjhe4sOMnzP4j35S592aods",
-    authDomain: "mitts-menu.firebaseapp.com",
-    databaseURL: "https://mitts-menu-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "mitts-menu",
-    storageBucket: "mitts-menu.appspot.com",
-    messagingSenderId: "1023674735399",
-    appId: "1:1023674735399:web:5bfbd8c6f3fa4f44e0e702",
-    measurementId: "G-FY4717JPP5"
-  };
+  apiKey: "AIzaSyDf7QDYCY0BR6zXewFQWfRGLmUNVT0kwaA",
+  authDomain: "mitts-web-test.firebaseapp.com",
+  projectId: "mitts-web-test",
+  storageBucket: "mitts-web-test.firebasestorage.app",
+  databaseURL:"https://mitts-web-test-default-rtdb.europe-west1.firebasedatabase.app",
+  messagingSenderId: "775073443533",
+  appId: "1:775073443533:web:0d28198a31efdc0aba0384",
+  measurementId: "G-J87VJ01XD5"
+};
   firebase.initializeApp(firebaseConfig);
   
   const db = firebase.database();
