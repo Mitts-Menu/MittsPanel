@@ -59,69 +59,156 @@ body {
   /* Kategori */
   .category {
     background-color: white;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    padding: 15px;
-    cursor: pointer;
-    border-left: 5px solid #FFB01D;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    border: 1px solid #e1e5e9;
+    transition: all 0.3s ease;
   }
   
   .category:hover {
-    background-color: #f8f9fa;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+  }
+
+  /* Kategori Header - Başlık ve Sıralama Butonları */
+  .category-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+    border-bottom: 1px solid #e9ecef;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .category-header:hover {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   }
   
   .category-title {
     font-size: 18px;
+    font-weight: 600;
+    color: #2c3e50;
+    flex-grow: 1;
+    margin: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .category-title::before {
+    content: "📋";
+    margin-right: 10px;
+    font-size: 16px;
+  }
+
+  /* Sıralama Butonları Container */
+  .order-buttons {
+    display: flex;
+    gap: 8px;
+    margin-right: 15px;
+  }
+
+  /* Sıralama Butonları */
+  .order-button {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    font-size: 16px;
     font-weight: bold;
-    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+  }
+
+  .order-button:hover {
+    background: linear-gradient(135deg, #218838 0%, #1fa085 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+  }
+
+  .order-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+  }
+
+  /* ID gösterimi için stil */
+  .category-id {
+    background-color: #FFB01D;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 12px;
+    margin-left: 10px;
   }
   
   /* Ürün Listesi */
   .item-list {
     display: none;
-    margin-top: 10px;
-    padding-left: 15px;
+    padding: 0;
+    background-color: #fafbfc;
+  }
+
+  .item-list.active {
+    display: block;
   }
   
   .item {
-    border-bottom: 1px solid #ccc;
-    padding: 10px 0;
-    color: #555;
+    border-bottom: 1px solid #e9ecef;
+    padding: 15px 20px;
+    color: #495057;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s ease;
+  }
+
+  .item:hover {
+    background-color: #f1f3f4;
   }
   
   .item:last-child {
     border-bottom: none;
   }
+
  /* Kategori ve ürün düzenleme, silme butonları */
 .category-buttons {
     display: flex;
-    justify-content: flex-end; /* Butonları sağa yaslamak için */
-    margin-top: 10px;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 15px 20px;
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
   }
   
   .category-button {
-    background-color: #FFB01D;
+    background: linear-gradient(135deg, #FFB01D 0%, #ff9800 100%);
     color: white;
     border: none;
-    border-radius: 5px;
-    padding: 5px 10px;
+    border-radius: 6px;
+    padding: 8px 16px;
     cursor: pointer;
-    font-size: 14px;
-    margin-left: 10px; /* Butonlar arasında mesafe */
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(255, 176, 29, 0.2);
   }
   
   .category-button:hover {
-    background-color: #f57c00;
+    background: linear-gradient(135deg, #f57c00 0%, #e65100 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(255, 176, 29, 0.3);
   }
-  
-  /* Kategori içeriği gizli, tıklanınca gösterilecek */
-  .item-list {
-    display: none;
-    margin-top: 10px;
-    padding-left: 20px;
-  }
-  
-  .item-list.active {
-    display: block;
+
+  .category-button:active {
+    transform: translateY(0);
   }

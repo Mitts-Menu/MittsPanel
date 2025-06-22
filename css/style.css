@@ -29,9 +29,10 @@ input[type="text"] {
 .save-button:hover {
     background-color: #f57c00;
 }
- /* Header */
- header {
-    background-color: #fff;
+
+/* Header */
+header {
+  background-color: #fff;
   height: 7rem;
   padding: 1em 3em;
   margin-bottom: 1em;
@@ -39,24 +40,67 @@ input[type="text"] {
   align-items: center;
   justify-content: space-between;
   position: relative;
-  }
-  
-  .logo {
-    width: 11rem; 
-    height: auto;
-  }
-  
-  .logout-button {
-    background-color: #FFB01D;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-size: 14px;
-  }
-  
-  .logout-button:hover {
-    background-color: #f57c00;
-  }
+}
+
+.logo {
+  width: 11rem; 
+  height: auto;
+}
+
+.logout-button {
+  background-color: #FFB01D;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.logout-button:hover {
+  background-color: #f57c00;
+}
+
+/* Sıralama Butonları Stilleri */
+.category-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+
+.order-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.order-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 5px 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.order-button:hover {
+  background-color: #218838;
+}
+
+.order-button:active {
+  transform: scale(0.95);
+}
+
+/* Mevcut category-title'ı güncelle */
+.category-title {
+  cursor: pointer;
+  flex-grow: 1;
+}
   
