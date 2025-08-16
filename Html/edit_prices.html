@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Profesyonel menü yönetim sistemi - Mitts Panel">
+  <meta name="description" content="Menü fiyatlarını düzenleyin - Mitts Panel">
   <meta name="author" content="Mitts">
   <meta name="theme-color" content="#2563eb">
-  <title>Menü Yönetimi | Mitts Panel</title>
+  <title>Fiyatları Düzenle | Mitts Panel</title>
   <link rel="stylesheet" href="../css/index.css">
+  <link rel="stylesheet" href="../css/edit_prices.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- Favicon -->
@@ -22,17 +23,16 @@
     <button class="logout-button" onclick="logout()">Çıkış Yap</button>
   </header>
 
-  <!-- Modern Action Buttons Container -->
-  <div class="add-category-container">
-    <button class="category-button" onclick="addCategory()" title="Yeni kategori ekle">
-      <span class="button-icon">➕</span>
-      Kategori Ekle
-    </button>
-    <button class="category-button secondary" onclick="window.location.href='../Html/edit_prices.html'" title="Menü fiyatlarını düzenle">
-      <span class="button-icon">💰</span>
-      Menü Fiyatları
-    </button>
-  </div>
+  <!-- Page Title Section -->
+  <section class="page-header">
+    <div class="page-title-container">
+      <h1 class="page-title">
+        <span class="page-icon">💰</span>
+        Menü Fiyatları
+      </h1>
+      <p class="page-description">Menü öğelerinizin fiyatlarını güncelleyin</p>
+    </div>
+  </section>
 
   <!-- Modern Menu Container -->
   <main class="menu-container" id="menuContainer" role="main">
@@ -44,11 +44,11 @@
     <!-- Empty State -->
     <div class="empty-state" id="emptyState" style="display: none;">
       <div class="empty-icon">📋</div>
-      <h3>Henüz kategori bulunmuyor</h3>
-      <p>Başlamak için ilk kategorinizi ekleyin</p>
-      <button class="category-button" onclick="addCategory()">
-        <span class="button-icon">➕</span>
-        İlk Kategorinizi Ekleyin
+      <h3>Henüz menü öğesi bulunmuyor</h3>
+      <p>Önce ana sayfadan kategori ve ürün ekleyin</p>
+      <button class="category-button" onclick="window.location.href='../Html/main.html'">
+        <span class="button-icon">🏠</span>
+        Ana Sayfaya Dön
       </button>
     </div>
     <!-- Kategoriler ve ürünler buraya yüklenecek -->
@@ -58,6 +58,6 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-  <script src="../Js/main.js?v=1"></script>
+  <script src="../Js/edit_prices.js"></script>
 </body>
 </html>
