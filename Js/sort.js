@@ -55,6 +55,8 @@ const firebaseConfig = {
   // ----------------------------------------------------
   let trCategories = [];
   let enCategories = [];
+  // Staged order (category_id array) per section; persisted only on confirm
+  const stagedOrders = { morning: null, afternoon: null, night: null };
   
   // ----------------------------------------------------
   // Init
@@ -64,11 +66,28 @@ const firebaseConfig = {
       console.log("[sort] initPage");
       loadTimeRanges();
       wireTimeRangeSaves();
+      wireConfirmButtons();
       loadCategoriesAndRender();
     } catch (e) {
       console.error("initPage error:", e);
       alert("Sayfa başlatılırken bir hata oluştu.");
     }
+  }
+
+  function wireConfirmButtons() {
+    const map = [
+      { key: "morning", btn: "confirmMorningOrder" },
+      { key: "afternoon", btn: "confirmAfternoonOrder" },
+      { key: "night", btn: "confirmNightOrder" }
+    ];
+    map.forEach(({ key, btn }) => {
+      const el = document.getElementById(btn);
+      if (!el) return;
+      el.addEventListener("click", () => {
+        console.log("[sort] confirm order click", key, stagedOrders[key]);
+        applyStagedOrder(key);
+      });
+    });
   }
   
   // ----------------------------------------------------
@@ -226,6 +245,11 @@ const firebaseConfig = {
       })
       .then(() => {
         // After possible normalization save, render sections
+        // Reset staged orders if null; otherwise keep user's staging
+        ["morning","afternoon","night"].forEach(k => {
+          if (!stagedOrders[k]) stagedOrders[k] = null; // leave as null to derive from data on first render
+        });
+
         renderSection("morning");
         renderSection("afternoon");
         renderSection("night");
@@ -262,15 +286,31 @@ const firebaseConfig = {
 
     const orderKey = orderKeyFor(sectionKey);
 
-    // Sort by section order (numeric) with stable tie-breaker by category_id
-    const sorted = [...trCategories].sort((a, b) => {
-      const ao = Number(a[orderKey] ?? 0);
-      const bo = Number(b[orderKey] ?? 0);
-      if (ao !== bo) return ao - bo;
-      const aid = Number(a.category_id);
-      const bid = Number(b.category_id);
-      return aid - bid;
-    });
+    let sorted;
+    // If there is a staged order for this section, respect it
+    if (Array.isArray(stagedOrders[sectionKey]) && stagedOrders[sectionKey].length) {
+      const idToCat = new Map(trCategories.map(c => [Number(c.category_id), c]));
+      sorted = stagedOrders[sectionKey]
+        .map(id => idToCat.get(Number(id)))
+        .filter(Boolean);
+      // Also add any new categories not in staged (edge case)
+      const stagedSet = new Set(stagedOrders[sectionKey].map(Number));
+      const rest = trCategories.filter(c => !stagedSet.has(Number(c.category_id)));
+      // Append rest in current data order
+      sorted = [...sorted, ...rest];
+    } else {
+      // Sort by section order (numeric) with stable tie-breaker by category_id
+      sorted = [...trCategories].sort((a, b) => {
+        const ao = Number(a[orderKey] ?? 0);
+        const bo = Number(b[orderKey] ?? 0);
+        if (ao !== bo) return ao - bo;
+        const aid = Number(a.category_id);
+        const bid = Number(b.category_id);
+        return aid - bid;
+      });
+      // Initialize staged with current visible order
+      stagedOrders[sectionKey] = sorted.map(c => Number(c.category_id));
+    }
 
     sorted.forEach((cat, idx) => {
       const row = document.createElement("div");
@@ -319,20 +359,32 @@ const firebaseConfig = {
     return "order_night";
   }
   
-  // Swap two items’ order fields and save to DB (both tr and en)
+  // Update staged order only; persistence happens on confirm
   function moveInSection(sectionKey, sortedArray, fromIndex, toIndex) {
     console.log("[sort] moveInSection", { sectionKey, fromIndex, toIndex });
     if (toIndex < 0 || toIndex >= sortedArray.length) return;
 
     const orderKey = orderKeyFor(sectionKey);
 
-    // Build array of category IDs in current visual order, perform the move, then re-index 0..n-1
-    const idList = sortedArray.map(c => Number(c.category_id));
+    // Build array of category IDs in current visual order, perform the move in stagedOrders
+    const idList = Array.isArray(stagedOrders[sectionKey]) && stagedOrders[sectionKey].length
+      ? [...stagedOrders[sectionKey]].map(Number)
+      : sortedArray.map(c => Number(c.category_id));
     console.log("[sort] before move order", sectionKey, idList);
     const tempId = idList[fromIndex];
     idList.splice(fromIndex, 1);
     idList.splice(toIndex, 0, tempId);
     console.log("[sort] after move order", sectionKey, idList);
+    // Save staged order and re-render only this section
+    stagedOrders[sectionKey] = idList;
+    renderSection(sectionKey);
+  }
+
+  // Persist staged order for a section to TR and EN
+  function applyStagedOrder(sectionKey) {
+    const orderKey = orderKeyFor(sectionKey);
+    const idList = stagedOrders[sectionKey];
+    if (!Array.isArray(idList) || idList.length === 0) return;
 
     // Apply new sequential orders to TR
     idList.forEach((catId, idx) => {
@@ -346,21 +398,15 @@ const firebaseConfig = {
       if (e) e[orderKey] = idx;
     });
 
-    // Optimistic UI update: re-render this section immediately
-    renderSection(sectionKey);
-
-    // Save both arrays
-    const p1 = db.ref("menu/tr").set(trCategories);
-    const p2 = db.ref("menu/en").set(enCategories);
-
-    Promise.all([p1, p2])
+    // Persist both arrays
+    Promise.all([db.ref("menu/tr").set(trCategories), db.ref("menu/en").set(enCategories)])
       .then(() => {
-        console.log("[sort] saved TR/EN successfully");
-        // Reload everything to ensure indexes and disabled states are correct across sections
+        console.log("[sort] confirmed and saved order for", sectionKey);
+        // After save, reload categories (keeps staged order as-is)
         loadCategoriesAndRender();
       })
       .catch(err => {
-        console.error("moveInSection error:", err);
-        alert("Sıralama güncellenirken hata oluştu.");
+        console.error("applyStagedOrder error:", err);
+        alert("Sıralama kaydedilirken hata oluştu.");
       });
   }

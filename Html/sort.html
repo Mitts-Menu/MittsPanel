@@ -28,6 +28,7 @@
   <section class="page-header">
     <h1>Zaman Bazlı Menü Sıralama</h1>
     <p>Morning, Afternoon ve Night için saat aralıklarını belirleyin ve her bölümde kategori sıralamasını düzenleyin.</p>
+    <p>Sıralamayı onaylamak için her bölümdeki "Sıralamayı Onayla" butonuna tıklayın.</p>
   </section>
 
   <!-- Time Range Controls -->
@@ -83,14 +84,23 @@
   <main class="sort-grid">
     <section class="sort-column" id="morningSection">
       <h2>Morning</h2>
+      <div class="section-actions">
+        <button class="category-button success" id="confirmMorningOrder">Sıralamayı Onayla</button>
+      </div>
       <div class="list" id="morningList"></div>
     </section>
     <section class="sort-column" id="afternoonSection">
       <h2>Afternoon</h2>
+      <div class="section-actions">
+        <button class="category-button success" id="confirmAfternoonOrder">Sıralamayı Onayla</button>
+      </div>
       <div class="list" id="afternoonList"></div>
     </section>
     <section class="sort-column" id="nightSection">
       <h2>Night</h2>
+      <div class="section-actions">
+        <button class="category-button success" id="confirmNightOrder">Sıralamayı Onayla</button>
+      </div>
       <div class="list" id="nightList"></div>
     </section>
   </main>
