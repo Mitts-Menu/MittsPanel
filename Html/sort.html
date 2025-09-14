@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Zaman Bazlı Menü Sıralama - Mitts Panel">
+  <meta name="theme-color" content="#2563eb">
+  <title>Zaman Bazlı Sıralama | Mitts Panel</title>
+  <link rel="stylesheet" href="../css/index.css">
+  <link rel="stylesheet" href="../css/sort.css">
+  <link rel="icon" type="image/x-icon" href="../img/favicon.ico">
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <a href="../Html/main.html">
+      <img src="../img/mitts_logo.png" alt="Logo" class="logo">
+    </a>
+    <div class="header-actions">
+      <button class="category-button secondary" onclick="window.location.href='../Html/main.html'">
+        ← Geri
+      </button>
+      <button class="logout-button" onclick="logout()">Çıkış Yap</button>
+    </div>
+  </header>
+
+  <!-- Page Title -->
+  <section class="page-header">
+    <h1>Zaman Bazlı Menü Sıralama</h1>
+    <p>Morning, Afternoon ve Night için saat aralıklarını belirleyin ve her bölümde kategori sıralamasını düzenleyin.</p>
+  </section>
+
+  <!-- Time Range Controls -->
+  <section class="time-ranges">
+    <div class="time-card" data-section="morning">
+      <div class="time-title">Morning</div>
+      <div class="time-inputs">
+        <label>
+          Başlangıç
+          <input type="number" min="0" max="23" id="morningStart" />
+        </label>
+        <span class="time-sep">→</span>
+        <label>
+          Bitiş
+          <input type="number" min="0" max="23" id="morningEnd" />
+        </label>
+      </div>
+      <button class="category-button success" id="saveMorning">Kaydet</button>
+    </div>
+    <div class="time-card" data-section="afternoon">
+      <div class="time-title">Afternoon</div>
+      <div class="time-inputs">
+        <label>
+          Başlangıç
+          <input type="number" min="0" max="23" id="afternoonStart" />
+        </label>
+        <span class="time-sep">→</span>
+        <label>
+          Bitiş
+          <input type="number" min="0" max="23" id="afternoonEnd" />
+        </label>
+      </div>
+      <button class="category-button success" id="saveAfternoon">Kaydet</button>
+    </div>
+    <div class="time-card" data-section="night">
+      <div class="time-title">Night</div>
+      <div class="time-inputs">
+        <label>
+          Başlangıç
+          <input type="number" min="0" max="23" id="nightStart" />
+        </label>
+        <span class="time-sep">→</span>
+        <label>
+          Bitiş
+          <input type="number" min="0" max="23" id="nightEnd" />
+        </label>
+      </div>
+      <button class="category-button success" id="saveNight">Kaydet</button>
+    </div>
+  </section>
+
+  <!-- 3-Column Sort Sections -->
+  <main class="sort-grid">
+    <section class="sort-column" id="morningSection">
+      <h2>Morning</h2>
+      <div class="list" id="morningList"></div>
+    </section>
+    <section class="sort-column" id="afternoonSection">
+      <h2>Afternoon</h2>
+      <div class="list" id="afternoonList"></div>
+    </section>
+    <section class="sort-column" id="nightSection">
+      <h2>Night</h2>
+      <div class="list" id="nightList"></div>
+    </section>
+  </main>
+
+  <!-- Firebase + Logic -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="../Js/sort.js"></script>
+</body>
+</html>
