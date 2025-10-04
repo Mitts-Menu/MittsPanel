@@ -1,13 +1,12 @@
 // Firebase yapılandırması
 const firebaseConfig = {
-  apiKey: "AIzaSyDf7QDYCY0BR6zXewFQWfRGLmUNVT0kwaA",
-  authDomain: "mitts-web-test.firebaseapp.com",
-  projectId: "mitts-web-test",
-  storageBucket: "mitts-web-test.firebasestorage.app",
-  databaseURL:"https://mitts-web-test-default-rtdb.europe-west1.firebasedatabase.app",
-  messagingSenderId: "775073443533",
-  appId: "1:775073443533:web:0d28198a31efdc0aba0384",
-  measurementId: "G-J87VJ01XD5"
+    apiKey: "AIzaSyAtW4wclUxX21J8oAOUYckOtzHOyf464qk",
+    authDomain: "testmenu-776bf.firebaseapp.com",
+    projectId: "testmenu-776bf",
+    storageBucket: "testmenu-776bf.firebasestorage.app",
+    messagingSenderId: "247652590137",
+    appId: "1:247652590137:web:978f304f086de50c8da3e8",
+    measurementId: "G-0ZZT7HNYNZ"
 };
 
 // Firebase'i başlat
@@ -122,27 +121,58 @@ function loadItemData(categoryId, itemId) {
         }
     });
 }
-function uploadImage(file) {
-    const storageRef = firebase.storage().ref('menu_images/' + file.name);
-    const uploadTask = storageRef.put(file);
-
-    return new Promise((resolve, reject) => {
-        uploadTask.on('state_changed', 
-            (snapshot) => {
-                // Yükleme ilerlemesi (isteğe bağlı)
-            }, 
-            (error) => {
-                reject(error);
-            }, 
-            () => {
-                // Yükleme tamamlandığında URL'yi almak
-                uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                    resolve(downloadURL);
-                }).catch((error) => {
-                    reject(error);
-                });
+function getNextImageSequence() {
+    const counterRef = firebase.database().ref("counters/image_seq");
+    return counterRef.transaction(current => (current || 0) + 1)
+        .then(result => {
+            if (!result.committed) {
+                throw new Error("Görsel sayaç güncellenemedi");
             }
-        );
+            return result.snapshot.val();
+        });
+}
+
+function getFileExtension(file) {
+    const name = file.name || "";
+    const dot = name.lastIndexOf(".");
+    if (dot !== -1) {
+        return name.substring(dot);
+    }
+    switch (file.type) {
+        case "image/webp": return ".webp";
+        case "image/jpeg": return ".jpg";
+        case "image/png": return ".png";
+        default: return "";
+    }
+}
+
+function uploadImage(file) {
+    return new Promise((resolve, reject) => {
+        getNextImageSequence()
+            .then(seq => {
+                // Dosya uzantısını al
+                const ext = getFileExtension(file);
+                // Her zaman .webp uzantısı kullan
+                const fileName = '0J6A282x' + seq + '.webp';
+                const storagePath = 'MittsWebp/' + fileName;
+                const storageRef = firebase.storage().ref(storagePath);
+                const uploadTask = storageRef.put(file);
+
+                uploadTask.on('state_changed', 
+                    (snapshot) => {
+                        // Yükleme ilerlemesi (isteğe bağlı)
+                    }, 
+                    (error) => {
+                        reject(error);
+                    }, 
+                    () => {
+                        // Download URL yerine direkt dosya yolunu kullan
+                        const imageUrl = 'MittsWebp/0J6A282x' + seq + '.webp';
+                        resolve({ downloadURL: imageUrl, storagePath });
+                    }
+                );
+            })
+            .catch(reject);
     });
 }
 // Ürün düzenleme formunun submit işlemi
@@ -217,9 +247,9 @@ document.getElementById("editItemForm").addEventListener("submit", function (eve
                     
                     // Yeni resim yükleme işlemine devam et
                     if (newImageFile) {
-                        uploadImage(newImageFile).then((newImageUrl) => {
-                            // Yeni resim yüklenmişse bu URL'yi kullan
-                            updateItemInDatabase(updatedNameTR, finalNameEN, updatedPrice, updatedDetailsTR, finalDetailsEN, newImageUrl, updatedIsActive);
+                        uploadImage(newImageFile).then(({ downloadURL, storagePath }) => {
+                            // Yeni resim yüklenmişse bu URL ve path'i kullan
+                            updateItemInDatabase(updatedNameTR, finalNameEN, updatedPrice, updatedDetailsTR, finalDetailsEN, downloadURL, updatedIsActive);
                         }).catch((error) => {
                             alert("Resim yüklenirken bir hata oluştu: " + error.message);
                             submitButton.disabled = false;

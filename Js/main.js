@@ -2,20 +2,20 @@
 // Firebase Config
 // ----------------------------------------------------
 const firebaseConfig = {
-  apiKey: "AIzaSyDf7QDYCY0BR6zXewFQWfRGLmUNVT0kwaA",
-  authDomain: "mitts-web-test.firebaseapp.com",
-  projectId: "mitts-web-test",
-  storageBucket: "mitts-web-test.firebasestorage.app",
-  databaseURL:"https://mitts-web-test-default-rtdb.europe-west1.firebasedatabase.app",
-  messagingSenderId: "775073443533",
-  appId: "1:775073443533:web:0d28198a31efdc0aba0384",
-  measurementId: "G-J87VJ01XD5"
+  apiKey: "AIzaSyAtW4wclUxX21J8oAOUYckOtzHOyf464qk",
+    authDomain: "testmenu-776bf.firebaseapp.com",
+    projectId: "testmenu-776bf",
+    storageBucket: "testmenu-776bf.firebasestorage.app",
+    messagingSenderId: "247652590137",
+    appId: "1:247652590137:web:978f304f086de50c8da3e8",
+    measurementId: "G-0ZZT7HNYNZ"
 };
 // Firebase başlat
 firebase.initializeApp(firebaseConfig);
 
 // Referanslar
 const db = firebase.database();
+const storage = firebase.storage();
 
 // ----------------------------------------------------
 // Çıkış butonu
@@ -251,16 +251,18 @@ function deleteItem(categoryName, itemName, categoryId) {
       .then(([trSnapshot, enSnapshot]) => {
         const deletePromises = [];
         let itemNumericId = null;
+        let imageUrl = null;
 
         // TR menüsünde kategori ID'sine göre eşleşen kategoriyi bul
         trSnapshot.forEach(categorySnapshot => {
           if (categorySnapshot.val().category_id === categoryId) {
             const itemsArray = categorySnapshot.val().items || [];
             
-            // Önce silinecek ürünün numeric ID'sini bul
+            // Önce silinecek ürünün numeric ID'sini ve image_url'ini bul
             const itemToDelete = itemsArray.find(item => item.name === itemName);
             if (itemToDelete) {
               itemNumericId = itemToDelete.id;
+              imageUrl = itemToDelete.image_url;
             }
             
             // Silinecek ürün dışındakileri filtrele
@@ -294,7 +296,17 @@ function deleteItem(categoryName, itemName, categoryId) {
           });
         }
 
-        return Promise.all(deletePromises);
+        return Promise.all(deletePromises).then(() => {
+          // Eğer ürünün resmi varsa ve placeholder değilse, Storage'dan sil
+          if (imageUrl && imageUrl !== "" && imageUrl !== "../img/mitts_logo.png" && imageUrl.includes("MittsWebp/")) {
+            // imageUrl direkt dosya yolu olduğu için (MittsWebp/0J6A282x15.webp gibi)
+            const storageRef = storage.ref().child(imageUrl);
+            return storageRef.delete().catch(error => {
+              console.log("Resim silinirken hata oluştu:", error);
+              // Resim silme hatasını görmezden gel, ürün yine de silinmiştir
+            });
+          }
+        });
       })
       .then(() => {
         // Silme işlemleri tamamlanınca listeyi yeniden yükle
@@ -336,31 +348,36 @@ function addCategory() {
       let enArray = enSnap.val() || [];
       if (!Array.isArray(enArray)) enArray = [];
 
-      // TR tarafı maxId
-      let trMaxId = 0;
+      // Her iki taraftan da max ID'yi bul (aynı ID kullanılacak)
+      let maxId = 0;
       trArray.forEach(cat => {
-        if (cat.category_id > trMaxId) trMaxId = cat.category_id;
+        if (cat.category_id > maxId) maxId = cat.category_id;
+      });
+      enArray.forEach(cat => {
+        if (cat.category_id > maxId) maxId = cat.category_id;
       });
 
-      // EN tarafı maxId (ayrı tutabilir ya da aynı id kullanabilirsin)
-      let enMaxId = 0;
-      enArray.forEach(cat => {
-        if (cat.category_id > enMaxId) enMaxId = cat.category_id;
-      });
+      // Yeni kategori ID'si
+      const newId = maxId + 1;
 
       // Yeni TR kategorisi
       const newCategoryTR = {
-        category_id: trMaxId + 1,
+        category_id: newId,
         category_name: newCategoryName,
-        items: []
+        items: [],
+        order_afternoon: newId,
+        order_morning: newId,
+        order_night: newId
       };
 
-      // Yeni EN kategorisi (ayrı id istiyorsan enMaxId+1 ver; 
-      // aynı id istersen trMaxId+1 kullan)
+      // Yeni EN kategorisi (aynı ID ve order değerleri)
       const newCategoryEN = {
-        category_id: enMaxId + 1,
+        category_id: newId,
         category_name: newCategoryName,
-        items: []
+        items: [],
+        order_afternoon: newId,
+        order_morning: newId,
+        order_night: newId
       };
 
       trArray.push(newCategoryTR);

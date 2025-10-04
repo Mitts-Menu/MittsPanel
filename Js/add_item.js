@@ -2,14 +2,13 @@
 // Firebase Config (aynen tekrar)
 // ----------------------------------------------------
 const firebaseConfig = {
-  apiKey: "AIzaSyDf7QDYCY0BR6zXewFQWfRGLmUNVT0kwaA",
-  authDomain: "mitts-web-test.firebaseapp.com",
-  projectId: "mitts-web-test",
-  storageBucket: "mitts-web-test.firebasestorage.app",
-  databaseURL:"https://mitts-web-test-default-rtdb.europe-west1.firebasedatabase.app",
-  messagingSenderId: "775073443533",
-  appId: "1:775073443533:web:0d28198a31efdc0aba0384",
-  measurementId: "G-J87VJ01XD5"
+  apiKey: "AIzaSyAtW4wclUxX21J8oAOUYckOtzHOyf464qk",
+    authDomain: "testmenu-776bf.firebaseapp.com",
+    projectId: "testmenu-776bf",
+    storageBucket: "testmenu-776bf.firebasestorage.app",
+    messagingSenderId: "247652590137",
+    appId: "1:247652590137:web:978f304f086de50c8da3e8",
+    measurementId: "G-0ZZT7HNYNZ"
 };
   firebase.initializeApp(firebaseConfig);
   
@@ -83,7 +82,7 @@ const firebaseConfig = {
     if (imageFile) {
       // 1) Resim seçilmişse, önce Firebase Storage'a yükleyelim
       uploadImage(imageFile)
-        .then(downloadURL => {
+        .then(({ downloadURL, storagePath }) => {
           // 2) Download URL'yi alıp DB'ye ekle
           addItemToCategory(itemNameTR, finalNameEN, itemPrice, itemDescriptionTR, finalDescriptionEN, itemIsPopular, itemIsActive, downloadURL)
             .then(() => {
@@ -120,30 +119,61 @@ const firebaseConfig = {
   // ----------------------------------------------------
   // Firebase Storage'a resmi yükleyen fonksiyon
   // ----------------------------------------------------
+  function getNextImageSequence() {
+    const counterRef = firebase.database().ref("counters/image_seq");
+    return counterRef.transaction(current => (current || 0) + 1)
+      .then(result => {
+        if (!result.committed) {
+          throw new Error("Görsel sayaç güncellenemedi");
+        }
+        return result.snapshot.val();
+      });
+  }
+
+  function getFileExtension(file) {
+    const name = file.name || "";
+    const dot = name.lastIndexOf(".");
+    if (dot !== -1) {
+      return name.substring(dot);
+    }
+    // Dosya adında uzantı yoksa, MIME tipinden tahmin et
+    switch (file.type) {
+      case "image/webp": return ".webp";
+      case "image/jpeg": return ".jpg";
+      case "image/png": return ".png";
+      default: return "";
+    }
+  }
+
   function uploadImage(file) {
     return new Promise((resolve, reject) => {
-      // Storage içinde "item_images" klasörüne yükleyelim (isteğe göre isimlendir)
-      const storageRef = storage.ref().child("item_images/" + file.name);
-  
-      const uploadTask = storageRef.put(file);
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Yükleme ilerlemesi: " + progress + "%");
-        },
-        (error) => {
-          reject(error);
-        },
-        () => {
-          uploadTask.snapshot.ref
-            .getDownloadURL()
-            .then((downloadURL) => {
-              resolve(downloadURL);
-            })
-            .catch((err) => reject(err));
-        }
-      );
+      getNextImageSequence()
+        .then(seq => {
+          // Dosya uzantısını al
+          const ext = getFileExtension(file);
+          // Her zaman .webp uzantısı kullan
+          const fileName = "0J6A282x" + seq + ".webp";
+          const storagePath = "MittsWebp/" + fileName;
+          const storageRef = storage.ref().child(storagePath);
+
+          const uploadTask = storageRef.put(file);
+          uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              console.log("Yükleme ilerlemesi: " + progress + "%");
+            },
+            (error) => {
+              reject(error);
+            },
+            () => {
+              // Download URL yerine direkt dosya yolunu kullan
+              const imageUrl = "MittsWebp/0J6A282x" + seq + ".webp";
+              resolve({ downloadURL: imageUrl, storagePath });
+            }
+          );
+        })
+        .catch(reject);
     });
   }
   

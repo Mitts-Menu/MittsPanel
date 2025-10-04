@@ -5,21 +5,6 @@
   <title>Yeni Ürün Ekle</title>
   <!-- CSS Dosyası -->
   <link rel="stylesheet" href="../css/add_item.css">
-  <style>
-    .language-section {
-      margin-bottom: 20px;
-      padding: 15px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      background-color: #f9f9f9;
-    }
-    .language-header {
-      font-weight: bold;
-      margin-bottom: 10px;
-      padding-bottom: 5px;
-      border-bottom: 1px solid #ccc;
-    }
-  </style>
 </head>
 <body>
   <!-- Header -->
@@ -36,28 +21,30 @@
   <!-- Ürün Ekleme Formu -->
   <form id="addItemForm">
     <!-- TR Bölümü -->
+    <div class="lang-grid">
     <div class="language-section">
       <div class="language-header">Türkçe Bilgiler</div>
-      <label for="itemNameTR">Ürün Adı (TR):</label><br>
-      <input type="text" id="itemNameTR" required><br><br>
+      <label for="itemNameTR">Ürün Adı (TR):</label>
+      <input type="text" id="itemNameTR" required>
 
-      <label for="itemDescriptionTR">Açıklama (TR):</label><br>
-      <textarea id="itemDescriptionTR" rows="4"></textarea><br><br>
+      <label for="itemDescriptionTR">Açıklama (TR):</label>
+      <textarea id="itemDescriptionTR" rows="4"></textarea>
     </div>
 
     <!-- EN Bölümü -->
     <div class="language-section">
       <div class="language-header">İngilizce Bilgiler</div>
-      <label for="itemNameEN">Ürün Adı (EN):</label><br>
-      <input type="text" id="itemNameEN"><br><br>
+      <label for="itemNameEN">Ürün Adı (EN):</label>
+      <input type="text" id="itemNameEN">
 
-      <label for="itemDescriptionEN">Açıklama (EN):</label><br>
-      <textarea id="itemDescriptionEN" rows="4"></textarea><br><br>
+      <label for="itemDescriptionEN">Açıklama (EN):</label>
+      <textarea id="itemDescriptionEN" rows="4"></textarea>
+    </div>
     </div>
 
     <!-- Ortak Bilgiler -->
-    <label for="itemPrice">Fiyat:</label><br>
-    <input type="number" step="0.01" id="itemPrice" required><br><br>
+    <label for="itemPrice">Fiyat:</label>
+    <input type="number" step="0.01" id="itemPrice" required>
 
     <div class="checkbox-container">
       <div class="checkbox-item">
@@ -70,11 +57,19 @@
         <input type="checkbox" id="itemIsPopular">
       </div>
     </div>
-    <br>
 
     <!-- Resim yükleme alanı -->
-    <label for="itemImage">Resim Yükle:</label><br>
-    <input type="file" id="itemImage" accept="image/*"><br><br>
+    <p class="notice warning">
+      Lütfen ürün fotoğrafını yüklemeden önce WebP formatına çeviriniz. WebP formatına çevirmeden yükleme yapmayınız.
+    </p>
+    <div class="converter-block">
+      <strong>Converter sitesi</strong><br>
+      <a href="https://cloudconvert.com/png-to-webp" target="_blank" rel="noopener" class="btn btn-primary">
+        PNG → WEBP Dönüştür
+      </a>
+    </div>
+    <label for="itemImage">Resim Yükle:</label>
+    <input type="file" id="itemImage" accept="image/*">
 
     <button type="submit">Ürünü Kaydet</button>
   </form>
