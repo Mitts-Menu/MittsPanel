@@ -2,13 +2,14 @@
 // Firebase Config (same as the panel)
 // ----------------------------------------------------
 const firebaseConfig = {
-  apiKey: "AIzaSyAtW4wclUxX21J8oAOUYckOtzHOyf464qk",
-  authDomain: "testmenu-776bf.firebaseapp.com",
-  projectId: "testmenu-776bf",
-  storageBucket: "testmenu-776bf.firebasestorage.app",
-  messagingSenderId: "247652590137",
-  appId: "1:247652590137:web:978f304f086de50c8da3e8",
-  measurementId: "G-0ZZT7HNYNZ"
+  apiKey: "AIzaSyDf7QDYCY0BR6zXewFQWfRGLmUNVT0kwaA",
+  authDomain: "mitts-web-test.firebaseapp.com",
+  databaseURL: "https://mitts-web-test-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "mitts-web-test",
+  storageBucket: "mitts-web-test.firebasestorage.app",
+  messagingSenderId: "775073443533",
+  appId: "1:775073443533:web:0d28198a31efdc0aba0384",
+  measurementId: "G-J87VJ01XD5"
   };
   
   // Initialize Firebase once
