@@ -15,54 +15,45 @@ const db = firebase.database();
 
 firebase.auth().onAuthStateChanged(user => {
   if (user) {
-    // Ana sayfadaki fonksiyona burada gerek yok, sadece oturum kontrolü yapalım
   } else {
     window.location.href = "../index.html";
   }
 });
-// Kullanıcı çıkış işlemi
+
 function logout() {
-    // Kullanıcıya çıkış yapıp yapmadığını sor
-    const confirmLogout = confirm("Çıkış yapmak istediğinizden emin misiniz?");
-    
-    if (confirmLogout) {
-        // Eğer kullanıcı evet derse, çıkış yapma işlemi yapılabilir
-        firebase.auth().signOut().then(() => {
-            alert("Çıkış başarılı!");
-            window.location.href = "../index.html"; // Giriş sayfasına yönlendir
-        }).catch((error) => {
-            alert("Çıkış yaparken bir hata oluştu: " + error.message);
-        });
-    }
+  const confirmLogout = confirm("Çıkış yapmak istediğinizden emin misiniz?");
+
+  if (confirmLogout) {
+    firebase.auth().signOut().then(() => {
+      alert("Çıkış başarılı!");
+      window.location.href = "../index.html";
+    }).catch((error) => {
+      alert("Çıkış yaparken bir hata oluştu: " + error.message);
+    });
+  }
 }
 
-// URL parametrelerinden kategori bilgilerini almak
 const urlParams = new URLSearchParams(window.location.search);
 const categoryName = urlParams.get("category");
-const categoryId = urlParams.get("id"); // Kategori ID'sini al
+const categoryId = urlParams.get("id");
 
 console.log("Category Name:", categoryName);
 console.log("Category ID:", categoryId);
 
-// Sayfa yüklendiğinde kategori verilerini getir
 window.onload = () => {
-  // Form elementinin DOM'da olduğundan emin olalım
   setTimeout(() => {
     if (categoryName && categoryId) {
       loadCategoryData(categoryId);
     } else {
       alert("Kategori bilgileri eksik.");
     }
-  }, 100); // Kısa bir gecikme sağlayarak DOM'un yüklenmesini bekleyelim
+  }, 100);
 };
 
-// Kategori verisini yükleme - artık ID'ye göre
 function loadCategoryData(categoryId) {
-  // Yüklenirken bilgi ver
   document.getElementById("categoryNameTR").value = "Yükleniyor...";
   document.getElementById("categoryNameEN").value = "Yükleniyor...";
-  
-  // TR ve EN menülerini paralel olarak çek
+
   Promise.all([
     db.ref("menu/tr").once("value"),
     db.ref("menu/en").once("value")
@@ -70,33 +61,27 @@ function loadCategoryData(categoryId) {
     let categoryFound = false;
     let trCategory = null;
     let enCategory = null;
-    
-    // TR menüsünde kategoriyi bul
+
     trSnapshot.forEach(categorySnapshot => {
-      // Kategori ID'si eşleşirse
       if (categorySnapshot.val().category_id === parseInt(categoryId)) {
         categoryFound = true;
         trCategory = categorySnapshot.val();
-        
-        // TR kategori bilgilerini forma yükle
+
         document.getElementById("categoryNameTR").value = trCategory.category_name;
-        
-        // Formun başlığını güncelle (önce varsa kontrol et)
+
         const pageTitle = document.querySelector('h1');
         if (pageTitle) {
           pageTitle.textContent = `Kategori Düzenle: ${trCategory.category_name}`;
         }
-        
-        // İçerdiği ürünlerin sayısını göster
+
         const itemCount = trCategory.items ? trCategory.items.length : 0;
         const itemCountElement = document.createElement('p');
         itemCountElement.textContent = `Bu kategoride ${itemCount} ürün bulunuyor.`;
         itemCountElement.className = "info-text";
-        
-        // Eğer zaten eklenmiş bir eleman varsa değiştir, yoksa ekle
+
         const existingInfo = document.querySelector('.info-text');
         const formElement = document.querySelector('form');
-        
+
         if (existingInfo) {
           existingInfo.textContent = itemCountElement.textContent;
         } else if (formElement) {
@@ -104,22 +89,19 @@ function loadCategoryData(categoryId) {
         }
       }
     });
-    
-    // EN menüsünde aynı ID'li kategoriyi bul
+
     enSnapshot.forEach(categorySnapshot => {
       if (categorySnapshot.val().category_id === parseInt(categoryId)) {
         enCategory = categorySnapshot.val();
-        
-        // EN kategori bilgilerini forma yükle
+
         document.getElementById("categoryNameEN").value = enCategory.category_name;
       }
     });
-    
-    // Eğer EN kategorisi bulunamadıysa veya adı yoksa, TR adını kopyala
+
     if (!enCategory && trCategory) {
       document.getElementById("categoryNameEN").value = trCategory.category_name;
     }
-    
+
     if (!categoryFound) {
       document.getElementById("categoryNameTR").value = "Kategori bulunamadı!";
       document.getElementById("categoryNameEN").value = "Kategori bulunamadı!";
@@ -132,11 +114,9 @@ function loadCategoryData(categoryId) {
   });
 }
 
-// Kategori düzenleme formunun submit işlemi
 document.getElementById("editCategoryForm").addEventListener("submit", function (event) {
   event.preventDefault();
 
-  // Butonun birden fazla kez tıklanmasını engelle
   const submitButton = this.querySelector('button[type="submit"]');
   submitButton.disabled = true;
   submitButton.textContent = "Kaydediliyor...";
@@ -157,19 +137,16 @@ document.getElementById("editCategoryForm").addEventListener("submit", function 
     submitButton.textContent = "Kaydet";
     return;
   }
-  
-  // Eğer EN adı boşsa TR adını kullan
+
   const finalCategoryNameEN = newCategoryNameEN || newCategoryNameTR;
 
-  // TR ve EN tüm menü verilerini çek
   const trPromise = db.ref("menu/tr").once("value");
   const enPromise = db.ref("menu/en").once("value");
 
   Promise.all([trPromise, enPromise])
     .then(([trSnapshot, enSnapshot]) => {
       const updatePromises = [];
-      
-      // TR menüsünde ID'ye göre kategoriyi bul ve güncelle
+
       trSnapshot.forEach(categorySnapshot => {
         if (categorySnapshot.val().category_id === parseInt(categoryId)) {
           updatePromises.push(
@@ -179,8 +156,7 @@ document.getElementById("editCategoryForm").addEventListener("submit", function 
           );
         }
       });
-      
-      // EN menüsünde ID'ye göre kategoriyi bul ve güncelle
+
       enSnapshot.forEach(categorySnapshot => {
         if (categorySnapshot.val().category_id === parseInt(categoryId)) {
           updatePromises.push(
@@ -190,12 +166,12 @@ document.getElementById("editCategoryForm").addEventListener("submit", function 
           );
         }
       });
-      
+
       return Promise.all(updatePromises);
     })
     .then(() => {
       alert("Kategori başarıyla güncellendi (TR ve EN).");
-      window.location.href = "main.html"; // Anasayfaya geri dön
+      window.location.href = "main.html";
     })
     .catch(error => {
       alert("Kategori güncellenirken hata oluştu: " + error.message);

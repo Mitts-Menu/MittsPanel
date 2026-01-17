@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,19 +12,17 @@
   <link rel="stylesheet" href="../css/edit_prices.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="../img/favicon.ico">
 </head>
+
 <body>
-  <!-- Header -->
   <header>
     <a href="../Html/main.html">
       <img src="../img/mitts_logo.png" alt="Logo" class="logo">
-    </a>    
+    </a>
     <button class="logout-button" onclick="logout()">Çıkış Yap</button>
   </header>
 
-  <!-- Page Title Section -->
   <section class="page-header">
     <div class="page-title-container">
       <h1 class="page-title">
@@ -34,14 +33,11 @@
     </div>
   </section>
 
-  <!-- Modern Menu Container -->
   <main class="menu-container" id="menuContainer" role="main">
-    <!-- Loading State -->
     <div class="loading-state" id="loadingState">
       <div class="loading-spinner"></div>
       <p>Menü yükleniyor...</p>
     </div>
-    <!-- Empty State -->
     <div class="empty-state" id="emptyState" style="display: none;">
       <div class="empty-icon">📋</div>
       <h3>Henüz menü öğesi bulunmuyor</h3>
@@ -51,13 +47,12 @@
         Ana Sayfaya Dön
       </button>
     </div>
-    <!-- Kategoriler ve ürünler buraya yüklenecek -->
   </main>
 
-  <!-- Firebase ve panel.js bağlantısı -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
   <script src="../Js/edit_prices.js"></script>
 </body>
+
 </html>

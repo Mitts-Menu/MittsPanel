@@ -1,87 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Yeni Ürün Ekle</title>
-  <!-- CSS Dosyası -->
   <link rel="stylesheet" href="../css/add_item.css">
 </head>
+
 <body>
-  <!-- Header -->
   <header>
     <a href="../Html/main.html">
-        <img src="../img/mitts_logo.png" alt="Logo" class="logo">
-      </a>    
-          <button class="logout-button" onclick="logout()">Çıkış Yap</button>
+      <img src="../img/mitts_logo.png" alt="Logo" class="logo">
+    </a>
+    <button class="logout-button" onclick="logout()">Çıkış Yap</button>
   </header>
 
-  
+
   <div class="edit-container">
     <h2>Yeni Ürün Ekle</h2>
-  <!-- Ürün Ekleme Formu -->
-  <form id="addItemForm">
-    <!-- TR Bölümü -->
-    <div class="lang-grid">
-    <div class="language-section">
-      <div class="language-header">Türkçe Bilgiler</div>
-      <label for="itemNameTR">Ürün Adı (TR):</label>
-      <input type="text" id="itemNameTR" required>
+    <form id="addItemForm">
+      <div class="lang-grid">
+        <div class="language-section">
+          <div class="language-header">Türkçe Bilgiler</div>
+          <label for="itemNameTR">Ürün Adı (TR):</label>
+          <input type="text" id="itemNameTR" required>
 
-      <label for="itemDescriptionTR">Açıklama (TR):</label>
-      <textarea id="itemDescriptionTR" rows="4"></textarea>
-    </div>
+          <label for="itemDescriptionTR">Açıklama (TR):</label>
+          <textarea id="itemDescriptionTR" rows="4"></textarea>
+        </div>
 
-    <!-- EN Bölümü -->
-    <div class="language-section">
-      <div class="language-header">İngilizce Bilgiler</div>
-      <label for="itemNameEN">Ürün Adı (EN):</label>
-      <input type="text" id="itemNameEN">
+        <div class="language-section">
+          <div class="language-header">İngilizce Bilgiler</div>
+          <label for="itemNameEN">Ürün Adı (EN):</label>
+          <input type="text" id="itemNameEN">
 
-      <label for="itemDescriptionEN">Açıklama (EN):</label>
-      <textarea id="itemDescriptionEN" rows="4"></textarea>
-    </div>
-    </div>
-
-    <!-- Ortak Bilgiler -->
-    <label for="itemPrice">Fiyat:</label>
-    <input type="number" step="0.01" id="itemPrice" required>
-
-    <div class="checkbox-container">
-      <div class="checkbox-item">
-        <label for="itemIsActive">Aktif mi?</label>
-        <input type="checkbox" id="itemIsActive" checked>
+          <label for="itemDescriptionEN">Açıklama (EN):</label>
+          <textarea id="itemDescriptionEN" rows="4"></textarea>
+        </div>
       </div>
-      
-      <div class="checkbox-item">
-        <label for="itemIsPopular">Popüler mi?</label>
-        <input type="checkbox" id="itemIsPopular">
+
+      <label for="itemPrice">Fiyat:</label>
+      <input type="number" step="0.01" id="itemPrice" required>
+
+      <div class="checkbox-container">
+        <div class="checkbox-item">
+          <label for="itemIsActive">Aktif mi?</label>
+          <input type="checkbox" id="itemIsActive" checked>
+        </div>
+
+        <div class="checkbox-item">
+          <label for="itemIsPopular">Popüler mi?</label>
+          <input type="checkbox" id="itemIsPopular">
+        </div>
       </div>
-    </div>
 
-    <!-- Resim yükleme alanı -->
-    <p class="notice warning">
-      Lütfen ürün fotoğrafını yüklemeden önce WebP formatına çeviriniz. WebP formatına çevirmeden yükleme yapmayınız.
-    </p>
-    <div class="converter-block">
-      <strong>Converter sitesi</strong><br>
-      <a href="https://cloudconvert.com/png-to-webp" target="_blank" rel="noopener" class="btn btn-primary">
-        PNG → WEBP Dönüştür
-      </a>
-    </div>
-    <label for="itemImage">Resim Yükle:</label>
-    <input type="file" id="itemImage" accept="image/*">
+      <p class="notice warning">
+        Lütfen ürün fotoğrafını yüklemeden önce WebP formatına çeviriniz. WebP formatına çevirmeden yükleme yapmayınız.
+      </p>
+      <div class="converter-block">
+        <strong>Converter sitesi</strong><br>
+        <a href="https://cloudconvert.com/png-to-webp" target="_blank" rel="noopener" class="btn btn-primary">
+          PNG → WEBP Dönüştür
+        </a>
+      </div>
+      <label for="itemImage">Resim Yükle:</label>
+      <input type="file" id="itemImage" accept="image/*">
 
-    <button type="submit">Ürünü Kaydet</button>
-  </form>
-</div>
-  <!-- Firebase JS SDK'ları -->
+      <button type="submit">Ürünü Kaydet</button>
+    </form>
+  </div>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
-  <!-- add_item JS Dosyası -->
   <script src="../Js/add_item.js?v=1"></script>
 
 </body>
+
 </html>

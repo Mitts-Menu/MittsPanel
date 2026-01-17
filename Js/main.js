@@ -1,6 +1,3 @@
-// ----------------------------------------------------
-// Firebase Config
-// ----------------------------------------------------
 const firebaseConfig = {
   apiKey: "AIzaSyDf7QDYCY0BR6zXewFQWfRGLmUNVT0kwaA",
   authDomain: "mitts-web-test.firebaseapp.com",
@@ -11,23 +8,18 @@ const firebaseConfig = {
   appId: "1:775073443533:web:0d28198a31efdc0aba0384",
   measurementId: "G-J87VJ01XD5"
 };
-// Firebase başlat
 firebase.initializeApp(firebaseConfig);
 
-// Referanslar
 const db = firebase.database();
 const storage = firebase.storage();
 
-// ----------------------------------------------------
-// Çıkış butonu
-// ----------------------------------------------------
 function logout() {
   const confirmLogout = confirm("Çıkış yapmak istediğinizden emin misiniz?");
   if (confirmLogout) {
     firebase.auth().signOut()
       .then(() => {
         alert("Çıkış başarılı!");
-        window.location.href = "../index.html"; 
+        window.location.href = "../index.html";
       })
       .catch((error) => {
         alert("Çıkış yaparken bir hata oluştu: " + error.message);
@@ -35,21 +27,14 @@ function logout() {
   }
 }
 
-// ----------------------------------------------------
-// Kullanıcı oturum kontrol
-// ----------------------------------------------------
 firebase.auth().onAuthStateChanged(user => {
   if (user) {
     loadMenuData();
   } else {
-    // Giriş yoksa anasayfaya (index.html) dön
     window.location.href = "../index.html";
   }
 });
 
-// ----------------------------------------------------
-// Menü verilerini yükleme
-// ----------------------------------------------------
 function loadMenuData() {
   const container = document.getElementById("menuContainer");
   container.innerHTML = "<p>Yükleniyor...</p>";
@@ -63,32 +48,26 @@ function loadMenuData() {
       return;
     }
 
-    // Kategorileri ID'ye göre sırala (alfabetik yerine)
     menuData.sort((a, b) => a.category_id - b.category_id);
 
     menuData.forEach((category, index) => {
-      // Kategori Div
       const categoryDiv = document.createElement("div");
       categoryDiv.className = "category";
 
-      // Kategori Başlık ve Sıralama Butonları Container
       const categoryHeaderDiv = document.createElement("div");
       categoryHeaderDiv.className = "category-header";
       categoryHeaderDiv.style.display = "flex";
       categoryHeaderDiv.style.alignItems = "center";
       categoryHeaderDiv.style.justifyContent = "flex-start";
 
-      // Kategori Başlık
       const categoryTitle = document.createElement("div");
       categoryTitle.className = "category-title";
       categoryTitle.onclick = () => toggleItemList(categoryDiv);
-      
-      // Kategori adını span olarak ekle
+
       const categoryNameSpan = document.createElement("span");
       categoryNameSpan.textContent = category.category_name;
       categoryTitle.appendChild(categoryNameSpan);
-      
-      // ID'yi badge olarak ekle
+
       const categoryIdBadge = document.createElement("span");
       categoryIdBadge.className = "category-id";
       categoryIdBadge.textContent = `ID: ${category.category_id}`;
@@ -97,7 +76,6 @@ function loadMenuData() {
       categoryHeaderDiv.appendChild(categoryTitle);
       categoryDiv.appendChild(categoryHeaderDiv);
 
-      // Ürün listesi
       const itemList = document.createElement("div");
       itemList.className = "item-list";
 
@@ -105,15 +83,13 @@ function loadMenuData() {
         category.items.forEach(item => {
           const itemDiv = document.createElement("div");
           itemDiv.className = "item";
-          
-          // Görseli olmayan ürünler için placeholder göster
+
           if (!item.image_url || item.image_url === "" || item.image_url === "undefined") {
             item.image_url = "../img/mitts_logo.png";
           }
-          
+
           itemDiv.textContent = `${item.name} - ${item.price} TL`;
 
-          // Düzenleme işlemi için kategori_id'yi de iletiyoruz
           const editItemButton = document.createElement("button");
           editItemButton.className = "category-button";
           editItemButton.textContent = "Düzenle";
@@ -122,7 +98,6 @@ function loadMenuData() {
             category_id: category.category_id
           });
 
-          // Silme işlemi için kategori_id'yi de iletiyoruz
           const deleteItemButton = document.createElement("button");
           deleteItemButton.className = "category-button";
           deleteItemButton.textContent = "Sil";
@@ -138,7 +113,6 @@ function loadMenuData() {
         itemList.appendChild(noItems);
       }
 
-      // Kategori butonları - kategori ID'sini de iletiyoruz
       const editCategoryButton = document.createElement("button");
       editCategoryButton.className = "category-button";
       editCategoryButton.textContent = "Düzenle";
@@ -149,16 +123,13 @@ function loadMenuData() {
       deleteCategoryButton.textContent = "Sil";
       deleteCategoryButton.onclick = () => deleteCategory(category.category_name, category.category_id);
 
-      // ÜRÜN EKLE butonu -> add_item.html'e yönlendir
       const addItemButton = document.createElement("button");
       addItemButton.className = "category-button";
       addItemButton.textContent = "Ürün Ekle";
       addItemButton.onclick = () => {
-        // Kategori adı ve kategori ID'sini parametre olarak gönderiyoruz
         window.location.href = `add_item.html?category=${encodeURIComponent(category.category_name)}&id=${encodeURIComponent(category.category_id)}`;
       };
 
-      // Buton grubu
       const buttonsDiv = document.createElement("div");
       buttonsDiv.className = "category-buttons";
       buttonsDiv.appendChild(editCategoryButton);
@@ -172,56 +143,42 @@ function loadMenuData() {
   });
 }
 
-// ----------------------------------------------------
-// Kategori düzenleme
-// ----------------------------------------------------
 function editCategory(categoryName, categoryId) {
   window.location.href = `edit_category.html?category=${encodeURIComponent(categoryName)}&id=${encodeURIComponent(categoryId)}`;
 }
 
-// ----------------------------------------------------
-// Kategori silme
-// ----------------------------------------------------
 function deleteCategory(categoryName, categoryId) {
   if (confirm(`"${categoryName}" kategorisini silmek istediğinize emin misiniz?`)) {
 
-    // Hem TR hem EN tüm verilerini al
     const trPromise = db.ref("menu/tr").once("value");
     const enPromise = db.ref("menu/en").once("value");
 
-    // Promise.all ile her ikisini de bekle
     Promise.all([trPromise, enPromise])
       .then(([trSnapshot, enSnapshot]) => {
         const deletePromises = [];
-        
-        // TR menüsünde kategori ID'sine göre eşleşen kategoriyi bul ve sil
+
         let trArray = [];
         trSnapshot.forEach(childSnapshot => {
           const category = childSnapshot.val();
-          // Kategori ID'si eşleşmiyorsa diziye ekle (eşleşenleri filtrele)
           if (category.category_id !== categoryId) {
             trArray.push(category);
           }
         });
-        
-        // EN menüsünde kategori ID'sine göre eşleşen kategoriyi bul ve sil
+
         let enArray = [];
         enSnapshot.forEach(childSnapshot => {
           const category = childSnapshot.val();
-          // Kategori ID'si eşleşmiyorsa diziye ekle (eşleşenleri filtrele)
           if (category.category_id !== categoryId) {
             enArray.push(category);
           }
         });
-        
-        // Güncellenmiş dizileri yazalım
+
         deletePromises.push(db.ref("menu/tr").set(trArray));
         deletePromises.push(db.ref("menu/en").set(enArray));
-        
+
         return Promise.all(deletePromises);
       })
       .then(() => {
-        // Silme işlemi tamamlanınca menüyü yeniden yükleyelim
         loadMenuData();
       })
       .catch(err => {
@@ -230,46 +187,34 @@ function deleteCategory(categoryName, categoryId) {
   }
 }
 
-// ----------------------------------------------------
-// Ürün düzenleme
-// ----------------------------------------------------
 function editItem(categoryName, item) {
   window.location.href = `edit_item.html?category=${encodeURIComponent(categoryName)}&id=${encodeURIComponent(item.category_id)}&item=${encodeURIComponent(item.name)}`;
 }
 
-// ----------------------------------------------------
-// Ürün silme
-// ----------------------------------------------------
 function deleteItem(categoryName, itemName, categoryId) {
   if (confirm(`"${itemName}" ürününü silmek istediğinize emin misiniz?`)) {
 
-    // Hem "menu/tr" hem "menu/en" tüm verilerini al
     const trPromise = db.ref("menu/tr").once("value");
     const enPromise = db.ref("menu/en").once("value");
 
-    // Promise.all ile aynı anda bekleyelim
     Promise.all([trPromise, enPromise])
       .then(([trSnapshot, enSnapshot]) => {
         const deletePromises = [];
         let itemNumericId = null;
         let imageUrl = null;
 
-        // TR menüsünde kategori ID'sine göre eşleşen kategoriyi bul
         trSnapshot.forEach(categorySnapshot => {
           if (categorySnapshot.val().category_id === categoryId) {
             const itemsArray = categorySnapshot.val().items || [];
-            
-            // Önce silinecek ürünün numeric ID'sini ve image_url'ini bul
+
             const itemToDelete = itemsArray.find(item => item.name === itemName);
             if (itemToDelete) {
               itemNumericId = itemToDelete.id;
               imageUrl = itemToDelete.image_url;
             }
-            
-            // Silinecek ürün dışındakileri filtrele
+
             const updatedItems = itemsArray.filter(item => item.name !== itemName);
-            
-            // Referans üzerinden güncelle
+
             if (updatedItems.length !== itemsArray.length) {
               deletePromises.push(
                 categorySnapshot.ref.child("items").set(updatedItems)
@@ -278,16 +223,13 @@ function deleteItem(categoryName, itemName, categoryId) {
           }
         });
 
-        // EN menüsünde ID'ye göre eşleşen ürünü sil
-        if (itemNumericId !== null) { // Eğer ID bulunduysa
+        if (itemNumericId !== null) {
           enSnapshot.forEach(categorySnapshot => {
             if (categorySnapshot.val().category_id === categoryId) {
               const itemsArray = categorySnapshot.val().items || [];
-              
-              // ID'ye göre filtrele
+
               const updatedItems = itemsArray.filter(item => item.id !== itemNumericId);
-              
-              // Referans üzerinden güncelle
+
               if (updatedItems.length !== itemsArray.length) {
                 deletePromises.push(
                   categorySnapshot.ref.child("items").set(updatedItems)
@@ -298,19 +240,15 @@ function deleteItem(categoryName, itemName, categoryId) {
         }
 
         return Promise.all(deletePromises).then(() => {
-          // Eğer ürünün resmi varsa ve placeholder değilse, Storage'dan sil
           if (imageUrl && imageUrl !== "" && imageUrl !== "../img/mitts_logo.png" && imageUrl.includes("MittsWebp/")) {
-            // imageUrl direkt dosya yolu olduğu için (MittsWebp/0J6A282x15.webp gibi)
             const storageRef = storage.ref().child(imageUrl);
             return storageRef.delete().catch(error => {
               console.log("Resim silinirken hata oluştu:", error);
-              // Resim silme hatasını görmezden gel, ürün yine de silinmiştir
             });
           }
         });
       })
       .then(() => {
-        // Silme işlemleri tamamlanınca listeyi yeniden yükle
         alert(`"${itemName}" ürünü başarıyla silindi.`);
         loadMenuData();
       })
@@ -320,36 +258,26 @@ function deleteItem(categoryName, itemName, categoryId) {
   }
 }
 
-// ----------------------------------------------------
-// Açılır/kapanır ürün listesi
-// ----------------------------------------------------
 function toggleItemList(categoryDiv) {
   const itemList = categoryDiv.querySelector(".item-list");
   itemList.classList.toggle("active");
 }
 
-// ----------------------------------------------------
-// Kategori ekleme işlemi
-// ----------------------------------------------------
 function addCategory() {
   const newCategoryName = prompt("Yeni Kategori Adı:");
   if (!newCategoryName) return;
 
-  // TR ve EN tarafındaki array'leri paralel çekmek için Promise kullanalım
   const trRef = db.ref("menu/tr").once("value");
   const enRef = db.ref("menu/en").once("value");
 
   Promise.all([trRef, enRef])
     .then(([trSnap, enSnap]) => {
-      // TR verisi
       let trArray = trSnap.val() || [];
       if (!Array.isArray(trArray)) trArray = [];
 
-      // EN verisi
       let enArray = enSnap.val() || [];
       if (!Array.isArray(enArray)) enArray = [];
 
-      // Her iki taraftan da max ID'yi bul (aynı ID kullanılacak)
       let maxId = 0;
       trArray.forEach(cat => {
         if (cat.category_id > maxId) maxId = cat.category_id;
@@ -358,10 +286,8 @@ function addCategory() {
         if (cat.category_id > maxId) maxId = cat.category_id;
       });
 
-      // Yeni kategori ID'si
       const newId = maxId + 1;
 
-      // Yeni TR kategorisi
       const newCategoryTR = {
         category_id: newId,
         category_name: newCategoryName,
@@ -371,7 +297,6 @@ function addCategory() {
         order_night: newId
       };
 
-      // Yeni EN kategorisi (aynı ID ve order değerleri)
       const newCategoryEN = {
         category_id: newId,
         category_name: newCategoryName,
@@ -384,7 +309,6 @@ function addCategory() {
       trArray.push(newCategoryTR);
       enArray.push(newCategoryEN);
 
-      // Her iki dili de güncelle
       const updatePromises = [];
       updatePromises.push(db.ref("menu/tr").set(trArray));
       updatePromises.push(db.ref("menu/en").set(enArray));
@@ -393,12 +317,9 @@ function addCategory() {
     })
     .then(() => {
       alert("Yeni kategori (TR ve EN) eklendi: " + newCategoryName);
-      loadMenuData(); // Tekrar yükle (main.html'de TR'yi göreceğiz)
+      loadMenuData();
     })
     .catch(err => {
       console.error("Kategori eklerken hata:", err);
     });
 }
-
-
-

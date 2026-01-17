@@ -1,5 +1,4 @@
 
-
 const firebaseConfig = {
   apiKey: "AIzaSyDf7QDYCY0BR6zXewFQWfRGLmUNVT0kwaA",
   authDomain: "mitts-web-test.firebaseapp.com",
@@ -11,11 +10,9 @@ const firebaseConfig = {
   measurementId: "G-J87VJ01XD5"
 };
 
-  // Firebase'i başlat
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
-// Giriş fonksiyonu
 function login() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;

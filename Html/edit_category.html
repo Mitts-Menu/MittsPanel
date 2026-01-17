@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +14,7 @@
             border-radius: 5px;
             background-color: #f9f9f9;
         }
+
         .language-header {
             font-weight: bold;
             margin-bottom: 10px;
@@ -21,31 +23,30 @@
         }
     </style>
 </head>
+
 <body>
     <header>
         <a href="../Html/main.html">
             <img src="../img/mitts_logo.png" alt="Logo" class="logo">
-          </a>    
-                  <button class="logout-button" onclick="logout()">Çıkış Yap</button>
+        </a>
+        <button class="logout-button" onclick="logout()">Çıkış Yap</button>
     </header>
 
     <div class="form-container">
         <h2>Kategori Düzenle</h2>
         <form id="editCategoryForm">
-            <!-- TR Bölümü -->
             <div class="language-section">
                 <div class="language-header">Türkçe Bilgiler</div>
                 <label for="categoryNameTR">Kategori Adı (TR):</label>
                 <input type="text" id="categoryNameTR" name="categoryNameTR" required>
             </div>
-            
-            <!-- EN Bölümü -->
+
             <div class="language-section">
                 <div class="language-header">İngilizce Bilgiler</div>
                 <label for="categoryNameEN">Kategori Adı (EN):</label>
                 <input type="text" id="categoryNameEN" name="categoryNameEN">
             </div>
-            
+
             <button type="submit" class="save-button">Kaydet</button>
         </form>
     </div>
@@ -55,4 +56,5 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="../Js/edit_category.js?v=1"></script>
 </body>
+
 </html>
