@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Profesyonel menü yönetim sistemi - Mitts Panel">
+    <meta name="author" content="Mitts">
+    <meta name="theme-color" content="#2563eb">
+    <title>Popup Yönetimi | Mitts Panel</title>
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/x-icon" href="../img/favicon.ico">
+    <style>
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input[type="file"],
+        .form-group input[type="time"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .preview-img {
+            max-width: 200px;
+            margin-top: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .gallery-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .gallery-img.selected {
+            border-color: #FFB01D;
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(255, 176, 29, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a href="../Html/main.html">
+            <img src="../img/mitts_logo.png" alt="Logo" class="logo">
+        </a>
+        <button class="logout-button" onclick="window.location.href='./main.html'">Geri Dön</button>
+    </header>
+
+    <main class="menu-container">
+        <div class="category">
+            <div class="category-header">
+                <div class="category-title">
+                    <span>Popup Ayarları</span>
+                </div>
+            </div>
+            <div style="padding: 20px;">
+                <form id="popupForm">
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="popupIsActive">
+                        <label for="popupIsActive" style="margin: 0;">Popup Aktif Mi?</label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Önceki Görsellerden Seç Veya Yeni Yükle</label>
+                        <div id="existingImagesList"
+                            style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; max-height: 200px; overflow-y: auto; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                            <span id="loadingImagesText" style="color: gray; font-size: 0.9em;">Görseller
+                                yükleniyor...</span>
+                        </div>
+                        <input type="file" id="popupImage" accept="image/*">
+                        <p style="font-size: 0.85em; color: gray; margin-top: 5px; margin-bottom: 0;">Yeni bir görsel
+                            yüklerseniz yukarıdaki galeriden olan seçim iptal olur.</p>
+                        <img id="currentPopupImage" class="preview-img" src="" alt="Mevcut Popup Görseli">
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="popupAlwaysShow" checked>
+                        <label for="popupAlwaysShow" style="margin: 0;">Zaman Kısıtlaması Yok (Sürekli Göster)</label>
+                    </div>
+
+                    <div id="timeLimitsContainer"
+                        style="display: none; padding-left: 10px; border-left: 2px solid #FFB01D; margin-bottom: 15px;">
+                        <div class="form-group">
+                            <label for="popupStartTime">Görünme Başlangıç Saati</label>
+                            <input type="time" id="popupStartTime">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="popupEndTime">Görünme Bitiş Saati</label>
+                            <input type="time" id="popupEndTime">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="category-button"
+                        style="width: 100%; justify-content: center; margin-top: 15px;">Kaydet</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+    <script src="../Js/popup.js?v=1"></script>
+</body>
+
+</html>
